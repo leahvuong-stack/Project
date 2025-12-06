@@ -502,5 +502,10 @@ LUU Y CUOI CUNG:
 - Thu muc DUNG: ...\Project (co thu muc .git ben trong)
 - Thu muc SAI: ...\QuanLyCongViec (khong co thu muc .git)
 
+- NEU PUSH BANG COMMAND LINE DUOC NHUNG GITHUB DESKTOP KHONG:
+  -> Xem file KHAC_PHUC_GITHUB_DESKTOP_PUSH.txt de biet chi tiet
+  -> Nguyen nhan pho bien: GitHub Desktop mo sai repository
+  -> Giai phap: File -> Add Local Repository -> Chon dung thu muc Project
+
 ================================================
 
