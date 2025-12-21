@@ -48,11 +48,11 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="DataAccess\DatabaseHelper.cs" />
-    <Compile Include="FormMain.cs">
+    <Compile Include="frrmMain.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="FormMain.Designer.cs">
-      <DependentUpon>FormMain.cs</DependentUpon>
+    <Compile Include="frrmMain.Designer.cs">
+      <DependentUpon>frrmMain.cs</DependentUpon>
     </Compile>
     <Compile Include="frmBaoCao.cs">
       <SubType>Form</SubType>
@@ -66,11 +66,11 @@
     <Compile Include="frmLichSu.Designer.cs">
       <DependentUpon>frmLichSu.cs</DependentUpon>
     </Compile>
-    <Compile Include="FrmProfile.cs">
+    <Compile Include="frmProfile.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="FrmProfile.Designer.cs">
-      <DependentUpon>FrmProfile.cs</DependentUpon>
+    <Compile Include="frmProfile.Designer.cs">
+      <DependentUpon>frmProfile.cs</DependentUpon>
     </Compile>
     <Compile Include="frmThemSuaTask.cs">
       <SubType>Form</SubType>
@@ -96,8 +96,8 @@
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <EmbeddedResource Include="FormMain.resx">
-      <DependentUpon>FormMain.cs</DependentUpon>
+    <EmbeddedResource Include="frrmMain.resx">
+      <DependentUpon>frrmMain.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="frmBaoCao.resx">
       <DependentUpon>frmBaoCao.cs</DependentUpon>
@@ -108,8 +108,8 @@
     <EmbeddedResource Include="frmDangKy.resx">
       <DependentUpon>frmDangKy.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="FrmProfile.resx">
-      <DependentUpon>FrmProfile.cs</DependentUpon>
+    <EmbeddedResource Include="frmProfile.resx">
+      <DependentUpon>frmProfile.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="frmThemSuaTask.resx">
       <DependentUpon>frmThemSuaTask.cs</DependentUpon>

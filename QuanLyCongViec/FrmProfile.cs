@@ -13,29 +13,30 @@ using System.Windows.Forms;
 
 namespace QuanLyCongViec
 {
-    public partial class FrmProfile : Form
+    public partial class frmProfile : Form
     {
 
         #region 1. KHAI BÁO BIẾN & THUỘC TÍNH
         private int _currentUserId;
         private string _currentPasswordHashInDb; // Lưu hash pass cũ để kiểm tra
 
-        // Thuộc tính công khai để FormMain lấy tên mới cập nhật (nếu có)
+        // Dùng để trả tên mới về FormMain
         public string NewFullName { get; private set; }
 
-        private string _originalFullName;
-        private string _originalEmail;
+        private string _originalFullName;  // Lưu tên gốc để so sánh thay đổi
+        private string _originalEmail; // Lưu email gốc để so sánh thay đổi
 
         #endregion
 
         #region 2. CONSTRUCTOR
 
-        public FrmProfile(int userId, string username, string fullName)
+        public frmProfile(int userId, string username, string fullName)
         {
             InitializeComponent();
             _currentUserId = userId;
             NewFullName = string.Empty; // Mặc định rỗng
 
+            // Khi user sửa Họ tên hoặc Email → kiểm tra thay đổi
             txt_Hoten.TextChanged += (s, e) => KiemTraThayDoiThongTin();
             txt_Email.TextChanged += (s, e) => KiemTraThayDoiThongTin();
 
@@ -47,7 +48,7 @@ namespace QuanLyCongViec
 
         #region Tải Thông Tin User
 
-        // Phương thức tải thông tin người dùng từ DB
+        // ⭐ Hiển thị dữ liệu user lên form
 
         private void HienThiDuLieuLenForm(DataRow row)
         {
@@ -59,13 +60,14 @@ namespace QuanLyCongViec
             // Lưu hash mật khẩu để đối chiếu sau này
             _currentPasswordHashInDb = row["PasswordHash"].ToString();
 
-            // Hiển thị ngày tháng
+            // Hiển thị ngày tạo tài khoản
             if (row["CreatedAt"] != DBNull.Value)
             {
                 txt_Ngaytao.Text = Convert.ToDateTime(row["CreatedAt"]).ToString("dd/MM/yyyy");
             }
         }
 
+        // ⭐ Xóa trắng các ô mật khẩu sau khi đổi
         private void ResetONhapMatKhau()
         {
             txt_MatKhauCu.Clear();
@@ -73,6 +75,7 @@ namespace QuanLyCongViec
             txt_XacNhanMatKhauMoi.Clear();
         }
 
+        // ⭐ Lấy thông tin user từ DB
         private void TaiThongTinUser()
         {
             try
@@ -107,7 +110,7 @@ namespace QuanLyCongViec
                     txt_Ngaytao.Text = Convert.ToDateTime(row["CreatedDate"])
                         .ToString("dd/MM/yyyy");
 
-                    // 🔹 LƯU GIÁ TRỊ GỐC
+                    // Lưu giá trị gốc ban đầu để kiểm tra thay đổi
                     _originalFullName = txt_Hoten.Text;
                     _originalEmail = txt_Email.Text;
 
@@ -125,13 +128,15 @@ namespace QuanLyCongViec
         #endregion
 
         #region KIỂM TRA THAY ĐỔI
+
+        // ⭐ Kiểm tra xem Họ tên / Email có thay đổi không
         private void KiemTraThayDoiThongTin()
         {
             bool daThayDoi =
                 txt_Hoten.Text.Trim() != _originalFullName ||
                 txt_Email.Text.Trim() != _originalEmail;
 
-            btn_capnhat.Enabled = daThayDoi;
+            btn_capnhat.Enabled = daThayDoi; // Enable nút nếu có thay đổi
         }
 
         #endregion
@@ -151,7 +156,7 @@ namespace QuanLyCongViec
             // Disable lại nút
             btn_capnhat.Enabled = false;
 
-
+            // Kiểm tra họ tên trống
             if (string.IsNullOrEmpty(hoTen))
             {
                 MessageBox.Show("Họ tên không được để trống.", "Cảnh báo",
@@ -207,7 +212,7 @@ namespace QuanLyCongViec
                 return;
             }
 
-            // 2. Validate xác nhận mật khẩu
+            // 2. Kiểm tra xác nhận mật khẩu
             if (matKhauMoi != xacNhan)
             {
                 MessageBox.Show("Mật khẩu xác nhận không khớp!",
@@ -215,7 +220,7 @@ namespace QuanLyCongViec
                 return;
             }
 
-            // 3. Validate độ dài mật khẩu
+            // 3. Kiểm tra độ dài mật khẩu
             if (matKhauMoi.Length < 6)
             {
                 MessageBox.Show("Mật khẩu mới phải có ít nhất 6 ký tự!",
@@ -242,7 +247,7 @@ namespace QuanLyCongViec
                 parameters
             );
 
-                // 6. Kiểm tra kết quả (SỬA LẠI ĐOẠN NÀY)
+                // 6. Kiểm tra kết quả 
                 if (rowsAffected == 0)
                 {
                     // Có dòng được update -> Thành công
@@ -269,22 +274,28 @@ namespace QuanLyCongViec
         }
         #endregion
 
+        // ⭐ Nút đóng form
         private void btn_Dong_Click(object sender, EventArgs e)
         {
             this.Close();
         }
 
-
-        private void FrmProfile_Load(object sender, EventArgs e)
+        // ⭐ Khi form load → tải thông tin user
+        private void frmProfile_Load(object sender, EventArgs e)
         {
             TaiThongTinUser();
+            this.MaximizeBox = false;
+            this.MinimizeBox = false;
+            this.FormBorderStyle = FormBorderStyle.FixedSingle;
         }
 
+        // ⭐ Nút cập nhật thông tin
         private void btn_capnhat_Click(object sender, EventArgs e)
         {
             XuLyCapNhatThongTin();
         }
 
+        // ⭐ Nút đổi mật khẩu
         private void btn_Doi_Click(object sender, EventArgs e)
         {
             XuLyDoiMatKhau();

@@ -343,7 +343,7 @@ namespace QuanLyCongViec
 
             // Sau này khi có frmMain, sẽ mở frmMain với thông tin này:
              this.Hide();
-             FormMain mainForm = new FormMain(maNguoiDung, tenDangNhap, hoTen);
+             frrmMain mainForm = new frrmMain(maNguoiDung, tenDangNhap, hoTen);
              mainForm.ShowDialog();
              this.Close();
 

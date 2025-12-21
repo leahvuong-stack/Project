@@ -1,6 +1,6 @@
 ﻿namespace QuanLyCongViec
 {
-    partial class FormMain
+    partial class frrmMain
     {
         /// <summary>
         /// Required designer variable.
@@ -254,7 +254,7 @@
             this.panel_Todo.Size = new System.Drawing.Size(321, 51);
             this.panel_Todo.TabIndex = 11;
             // 
-            // FormMain
+            // frrmMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
@@ -267,8 +267,9 @@
             this.Controls.Add(this.groupBox3);
             this.Controls.Add(this.groupBox2);
             this.Controls.Add(this.groupBox1);
-            this.Name = "FormMain";
+            this.Name = "frrmMain";
             this.Text = "Hệ Thống Ứng dụng quản lý công việc";
+            this.Load += new System.EventHandler(this.frrmMain_Load);
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
             this.groupBox3.ResumeLayout(false);

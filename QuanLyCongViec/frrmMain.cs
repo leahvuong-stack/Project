@@ -13,7 +13,7 @@ using System.Windows.Forms;
 
 namespace QuanLyCongViec
 {
-    public partial class FormMain : Form
+    public partial class frrmMain : Form
     {
 
         #region 1. KHAI BÁO BIẾN & THUỘC TÍNH (Fields)
@@ -21,23 +21,25 @@ namespace QuanLyCongViec
         private int _currentUserId;
         private string _username;
         private string _fullName;
-        private Timer _timer; // Để cập nhật thời gian
+        private Timer _timer; // Timer dùng để cập nhật thời gian liên tục
 
         #endregion
 
         #region 2. CONSTRUCTOR & KHỞI TẠO
 
-        public FormMain(int userId, string username, string fullName)
+        public frrmMain(int userId, string username, string fullName)
         {
+            // Constructor nhận thông tin user từ form đăng nhập truyền sang
             InitializeComponent();
             _currentUserId = userId;
             _username = username;
             _fullName = fullName;
 
-            // Khởi tạo
-            HienThiThongTinUser();
-            CapNhatDashboard();
-            KhoiTaoTimer();
+            // Khởi tạo giao diện & dữ liệu ban đầu
+            HienThiThongTinUser();   // Hiển thị tên, username
+            CapNhatDashboard();      // Load số liệu Dashboard
+            KhoiTaoTimer();          // Khởi tạo đồng hồ thời gian
+
 
             // Thiết lập màu sắc cho các panel
             panel_Tong.BackColor = ColorTranslator.FromHtml("#4C84FF");
@@ -47,7 +49,7 @@ namespace QuanLyCongViec
             panel_QuaHan.BackColor = ColorTranslator.FromHtml("#FF6B6B");
         }
 
-        // Quản lý tài nguyên khi đóng form
+        // Khi đóng form → dừng timer để tránh rò rỉ tài nguyên
         protected override void OnFormClosing(FormClosingEventArgs e)
         {
             _timer?.Stop();
@@ -59,6 +61,7 @@ namespace QuanLyCongViec
 
         #region 3. CÁC HÀM XỬ LÝ GIAO DIỆN & THỜI GIAN
 
+        // Hiển thị tên + username
         private void HienThiThongTinUser()
         {
             lbl_Ten.Text = $"Xin chào, {_fullName}";
@@ -66,12 +69,14 @@ namespace QuanLyCongViec
             CapNhatThoiGian();
         }
 
+        // Cập nhật ngày tháng hiện tại
         private void CapNhatThoiGian()
         {
             DateTime ngayHienTai = DateTime.Now;
             lbl_NgayThang.Text = ngayHienTai.ToString("'hôm nay:' dd/MM/yyyy");
         }
 
+        // Khởi tạo timer → mỗi 1 giây sẽ cập nhật thời gian trên giao diện
         private void KhoiTaoTimer()
         {
             _timer = new Timer();
@@ -84,13 +89,14 @@ namespace QuanLyCongViec
 
         #region 4. CÁC HÀM XỬ LÝ DỮ LIỆU (DATA LOGIC)
 
+        // Hàm gọi Stored Procedure để lấy thống kê công việc
         private void CapNhatDashboard()
         {
             try
             {
                 SqlParameter[] parameters =
                 {
-                    new SqlParameter("@UserId", _currentUserId)
+                    new SqlParameter("@UserId", _currentUserId) // chỉ lấy dữ liệu của user hiện tại
                 };
 
                 DataTable dt = DatabaseHelper.ExecuteStoredProcedure(
@@ -100,6 +106,7 @@ namespace QuanLyCongViec
 
                 if (dt.Rows.Count > 0)
                 {
+                    // Đổ dữ liệu vào label Dashboard
                     DataRow row = dt.Rows[0];
                     lbl_TongCongViec.Text = $"Tổng công việc: {row["TotalTasks"]}";
                     lbl_Todo.Text = $"Cần làm (To-do): {row["TodoCount"]}";
@@ -119,18 +126,21 @@ namespace QuanLyCongViec
 
         #region 5. XỬ LÝ SỰ KIỆN CỦA CONTROLS (Events)
 
+        // Mở form báo cáo
         private void btn_BaoCao_Click(object sender, EventArgs e)
         {
             frmBaoCao reportForm = new frmBaoCao();
             reportForm.ShowDialog();
         }
 
+        // Mở form lịch sử
         private void btn_LichSu_Click(object sender, EventArgs e)
         {
             frmLichSu historyForm = new frmLichSu();
             historyForm.ShowDialog();
         }
 
+        // Mở form quản lý công việc
         private void btn_QuanLyCongViec_Click(object sender, EventArgs e)
         {
             frmThemSuaTask taskForm = new frmThemSuaTask();
@@ -138,6 +148,7 @@ namespace QuanLyCongViec
             CapNhatDashboard(); // Refresh sau khi đóng
         }
 
+        // Xử lý đăng xuất
         private void btn_DangXuat_Click(object sender, EventArgs e)
         {
             if (MessageBox.Show("Bạn có chắc muốn đăng xuất?", "Xác nhận",
@@ -151,11 +162,13 @@ namespace QuanLyCongViec
             }
         }
 
+        // Mở form Profile khi click vào link username
         private void llb_Username_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
-            FrmProfile profileForm = new FrmProfile(_currentUserId, _username, _fullName);
+            frmProfile profileForm = new frmProfile(_currentUserId, _username, _fullName);
             profileForm.ShowDialog();
 
+            // Nếu người dùng đổi tên → cập nhật lại trên Main
             if (!string.IsNullOrEmpty(profileForm.NewFullName))
             {
                 // Cập nhật lại thông tin người dùng nếu họ đổi tên trong Profile
@@ -171,5 +184,13 @@ namespace QuanLyCongViec
         }
 
         #endregion
+
+        // Khi form load → khóa resize + tắt nút phóng to
+        private void frrmMain_Load(object sender, EventArgs e)
+        {
+            this.MaximizeBox = false;
+            this.MinimizeBox = false;
+            this.FormBorderStyle = FormBorderStyle.FixedSingle;
+        }
     }
 }

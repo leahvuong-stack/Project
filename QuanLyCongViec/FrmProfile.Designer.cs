@@ -1,6 +1,6 @@
 ﻿namespace QuanLyCongViec
 {
-    partial class FrmProfile
+    partial class frmProfile
     {
         /// <summary>
         /// Required designer variable.
@@ -242,7 +242,7 @@
             this.Controls.Add(this.groupBox1);
             this.Name = "FrmProfile";
             this.Text = "FrmProfile";
-            this.Load += new System.EventHandler(this.FrmProfile_Load);
+            this.Load += new System.EventHandler(this.frmProfile_Load);
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
             this.groupBox2.ResumeLayout(false);
