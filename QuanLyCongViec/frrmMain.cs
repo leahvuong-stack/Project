@@ -35,9 +35,6 @@ namespace QuanLyCongViec
             _username = username;
             _fullName = fullName;
 
-            // Set font Unicode cho form
-            Helpers.FontHelper.SetUnicodeFont(this);
-
             // Khởi tạo giao diện & dữ liệu ban đầu
             HienThiThongTinUser();   // Hiển thị tên, username
             CapNhatDashboard();      // Load số liệu Dashboard

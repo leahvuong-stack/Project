@@ -20,8 +20,6 @@ namespace QuanLyCongViec
         public frmQuenMK()
         {
             InitializeComponent();
-            // Set font Unicode cho form
-            Helpers.FontHelper.SetUnicodeFont(this);
         }
 
         #endregion

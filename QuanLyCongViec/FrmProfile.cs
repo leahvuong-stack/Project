@@ -35,16 +35,9 @@ namespace QuanLyCongViec
             InitializeComponent();
             _currentUserId = userId;
             NewFullName = string.Empty; // Mặc định rỗng
-
-            // Set font Unicode cho form
-            Helpers.FontHelper.SetUnicodeFont(this);
-
             // Khi user sửa Họ tên hoặc Email → kiểm tra thay đổi
             txt_Hoten.TextChanged += (s, e) => KiemTraThayDoiThongTin();
             txt_Email.TextChanged += (s, e) => KiemTraThayDoiThongTin();
-
-            // Cấu hình giao diện ban đầu (nếu cần)
-
         }
 
         #endregion

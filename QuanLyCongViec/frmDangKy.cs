@@ -23,8 +23,6 @@ namespace QuanLyCongViec
         public frmDangKy()
         {
             InitializeComponent();
-            // Set font Unicode cho form
-            Helpers.FontHelper.SetUnicodeFont(this);
         }
         #endregion
 

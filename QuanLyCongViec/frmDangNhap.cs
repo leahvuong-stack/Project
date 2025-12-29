@@ -23,10 +23,6 @@ namespace QuanLyCongViec
         public frmDangNhap()
         {
             InitializeComponent();
-            // Set font Unicode cho form
-            Helpers.FontHelper.SetUnicodeFont(this);
-            TestDatabaseConnection();
-            LoadRememberedCredentials();
         }
 
         #endregion
