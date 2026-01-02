@@ -84,7 +84,7 @@
             this.rbMaSach.Size = new System.Drawing.Size(69, 21);
             this.rbMaSach.TabIndex = 2;
             this.rbMaSach.TabStop = true;
-            this.rbMaSach.Text = "Mã CV";
+            this.rbMaSach.Text = "Mã Lịch Sử";
             this.rbMaSach.UseVisualStyleBackColor = true;
             this.rbMaDG.AutoSize = true;
             this.rbMaDG.Font = new System.Drawing.Font("Segoe UI", 7.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));

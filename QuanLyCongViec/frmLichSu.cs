@@ -14,6 +14,17 @@ namespace QuanLyCongViec
             InitializeComponent();
             Helpers.FontHelper.SetUnicodeFont(this);
             Helpers.FontHelper.SetUnicodeFontForDataGridView(dgvLichSu);
+
+            // Nhấn phím Enter để tìm kiếm
+            txtTimKiem.KeyDown += (s, e) =>
+            {
+                if (e.KeyCode == Keys.Enter)
+                {
+                    btnTimKiem_Click(s, e);
+                    e.SuppressKeyPress = true;
+                }
+            };
+
             HienThiDanhSach();
         }
 
@@ -48,6 +59,8 @@ namespace QuanLyCongViec
                         dgvLichSu.Columns["DoUuTien"].HeaderText = "Độ Ưu Tiên";
                     if (dgvLichSu.Columns["ChiTiet"] != null)
                         dgvLichSu.Columns["ChiTiet"].HeaderText = "Chi Tiết";
+                    txtTimKiem.Text = "";
+                    rbMaDG.Checked = true;
                 }
                 else
                 {
