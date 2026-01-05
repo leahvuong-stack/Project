@@ -7,16 +7,10 @@ using QuanLyCongViec.Helpers;
 
 namespace QuanLyCongViec
 {
-    /// <summary>
-    /// Form quên mật khẩu - Cho phép người dùng reset mật khẩu bằng username hoặc email
-    /// </summary>
     public partial class frmQuenMK : Form
     {
         #region Constructor - Hàm khởi tạo
-
-        /// <summary>
-        /// Khởi tạo form quên mật khẩu
-        /// </summary>
+        //Khởi tạo form quên mật khẩu
         public frmQuenMK()
         {
             InitializeComponent();
@@ -25,36 +19,27 @@ namespace QuanLyCongViec
         #endregion
 
         #region Event Handlers - Xử lý sự kiện
-
-        /// <summary>
-        /// Xử lý sự kiện click nút Xác nhận
-        /// </summary>
+        //Xử lý sự kiện click nút Xác nhận
         private void btnXacNhan_Click(object sender, EventArgs e)
         {
             PerformResetPassword();
         }
 
-        /// <summary>
-        /// Xử lý sự kiện click nút Hủy
-        /// </summary>
+        //Xử lý sự kiện click nút Hủy
         private void btnHuy_Click(object sender, EventArgs e)
         {
             this.DialogResult = DialogResult.Cancel;
             this.Close();
         }
 
-        /// <summary>
-        /// Xử lý sự kiện click link Đăng nhập
-        /// </summary>
+        //Xử lý sự kiện click link Đăng nhập
         private void linklblDangNhap_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
             this.DialogResult = DialogResult.Cancel;
             this.Close();
         }
 
-        /// <summary>
-        /// Xử lý sự kiện nhấn phím Enter trong textbox Username/Email
-        /// </summary>
+        //Xử lý sự kiện nhấn phím Enter trong textbox Username/Email
         private void txtUsernameOrEmail_KeyDown(object sender, KeyEventArgs e)
         {
             if (e.KeyCode == Keys.Enter)
@@ -64,9 +49,7 @@ namespace QuanLyCongViec
             }
         }
 
-        /// <summary>
-        /// Xử lý sự kiện nhấn phím Enter trong textbox Mật khẩu mới
-        /// </summary>
+        //Xử lý sự kiện nhấn phím Enter trong textbox Mật khẩu mới
         private void txtMatKhauMoi_KeyDown(object sender, KeyEventArgs e)
         {
             if (e.KeyCode == Keys.Enter)
@@ -76,9 +59,7 @@ namespace QuanLyCongViec
             }
         }
 
-        /// <summary>
-        /// Xử lý sự kiện nhấn phím Enter trong textbox Xác nhận mật khẩu
-        /// </summary>
+        //Xử lý sự kiện nhấn phím Enter trong textbox Xác nhận mật khẩu
         private void txtXacNhanMatKhau_KeyDown(object sender, KeyEventArgs e)
         {
             if (e.KeyCode == Keys.Enter)
@@ -91,10 +72,7 @@ namespace QuanLyCongViec
         #endregion
 
         #region Private Methods - Các phương thức riêng tư
-
-        /// <summary>
-        /// Thực hiện reset mật khẩu
-        /// </summary>
+        //Thực hiện reset mật khẩu
         private void PerformResetPassword()
         {
             try
@@ -219,8 +197,6 @@ namespace QuanLyCongViec
         /// <summary>
         /// Reset password trong database
         /// </summary>
-        /// <param name="usernameOrEmail">Username hoặc email</param>
-        /// <param name="newPassword">Mật khẩu mới</param>
         /// <returns>1: Thành công, -1: Không tìm thấy user, -2: Tài khoản bị vô hiệu hóa</returns>
         private int ResetPasswordInDatabase(string usernameOrEmail, string newPassword)
         {
@@ -238,10 +214,7 @@ namespace QuanLyCongViec
             return result;
         }
 
-        /// <summary>
-        /// Xử lý kết quả reset password
-        /// </summary>
-        /// <param name="result">Kết quả từ stored procedure</param>
+        //Xử lý kết quả reset password
         private void ProcessResetResult(int result)
         {
             switch (result)

@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Data;
 using System.Data.SqlClient;
 using System.Windows.Forms;
@@ -29,32 +29,24 @@ namespace QuanLyCongViec
 
         #region Event Handlers - Xử lý sự kiện
         //Xử lý sự kiện click nút Đăng nhập
-        //<param name="sender">Đối tượng gửi sự kiện</param>
-        //<param name="e">Thông tin sự kiện</param>
         private void btnXacNhan_Click(object sender, EventArgs e)
         {
             PerformLogin();
         }
         //Xử lý sự kiện click link Đăng ký
         //Mở form đăng ký và xử lý kết quả sau khi đóng
-        //<param name="sender">Đối tượng gửi sự kiện</param>
-        //<param name="e">Thông tin sự kiện</param>
         private void linklblDangKy_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
             OpenRegistrationForm();
         }
         //Xử lý sự kiện click link Quên mật khẩu
         //Mở form quên mật khẩu
-        //<param name="sender">Đối tượng gửi sự kiện</param>
-        //<param name="e">Thông tin sự kiện</param>
         private void linklblQuenMK_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
             OpenForgotPasswordForm();
         }
         //Xử lý sự kiện nhấn phím Enter trong textbox Tài khoản
         //Chuyển focus sang textbox Mật khẩu
-        //<param name="sender">Đối tượng gửi sự kiện</param>
-        //<param name="e">Thông tin sự kiện phím</param>
         private void txtTaiKhoan_KeyDown(object sender, KeyEventArgs e)
         {
             if (e.KeyCode == Keys.Enter)
@@ -65,8 +57,6 @@ namespace QuanLyCongViec
         }
         //Xử lý sự kiện nhấn phím Enter trong textbox Mật khẩu
         //Thực hiện đăng nhập
-        //<param name="sender">Đối tượng gửi sự kiện</param>
-        //<param name="e">Thông tin sự kiện phím</param>
         private void txtMatKhau_KeyDown(object sender, KeyEventArgs e)
         {
             if (e.KeyCode == Keys.Enter)
@@ -78,38 +68,6 @@ namespace QuanLyCongViec
         #endregion
 
         #region Private Methods - Các phương thức riêng tư
-        //Kiểm tra kết nối database khi form được load
-        //Hiển thị thông báo lỗi nếu không kết nối được
-        private void TestDatabaseConnection()
-        {
-            try
-            {
-                DatabaseHelper.TestConnection();
-            }
-            catch (Exception loi)
-            {
-                ShowDatabaseConnectionError(loi);
-            }
-        }
-        //Hiển thị thông báo lỗi kết nối database
-        //<param name="loi">Exception xảy ra khi kết nối</param>
-        private void ShowDatabaseConnectionError(Exception loi)
-        {
-            string thongBaoLoi = "❌ Lỗi kết nối database!\n\n" +
-                                "Chi tiết: " + loi.Message + "\n\n" +
-                    "Vui lòng kiểm tra:\n" +
-                    "1. SQL Server đang chạy\n" +
-                    "2. Database 'QuanLyCongViec' đã được tạo\n" +
-                    "3. Connection string trong App.config đúng\n\n" +
-                                "Xem file README_SHARE.md trong project để biết cách setup.";
-
-            MessageBox.Show(
-                thongBaoLoi,
-                    "Lỗi kết nối",
-                    MessageBoxButtons.OK,
-                    MessageBoxIcon.Error
-                );
-            }
         //Mở form đăng ký và xử lý kết quả
         //Nếu đăng ký thành công, tự động điền username vào form đăng nhập
         private void OpenRegistrationForm()
@@ -177,7 +135,6 @@ namespace QuanLyCongViec
             }
         }
         //Kiểm tra tài khoản có đang bị khóa không
-        //<returns>True nếu tài khoản đang bị khóa, False nếu không</returns>
         private bool IsAccountLocked()
         {
             if (_thoiGianKhoaDen.HasValue && DateTime.Now < _thoiGianKhoaDen.Value)
@@ -189,7 +146,6 @@ namespace QuanLyCongViec
             return false;
         }
         //Hiển thị thông báo tài khoản bị khóa
-        //<param name="soPhutConLai">Số phút còn lại trước khi mở khóa</param>
         private void ShowAccountLockedMessage(int soPhutConLai)
         {
             string thongBao = $"Tài khoản đã bị khóa tạm thời do đăng nhập sai quá nhiều lần!\n\n" +
@@ -230,8 +186,6 @@ namespace QuanLyCongViec
             return true;
         }
         //Hiển thị thông báo lỗi validation và focus vào control tương ứng
-        //<param name="message">Thông báo lỗi</param>
-        //<param name="control">Control cần focus</param>
         private void ShowValidationError(string message, Control control)
         {
             MessageBox.Show(
@@ -243,7 +197,6 @@ namespace QuanLyCongViec
             control.Focus();
         }
         //Xác thực thông tin đăng nhập với database
-        //<returns>DataTable chứa thông tin user nếu đăng nhập thành công, null nếu thất bại</returns>
         private DataTable AuthenticateUser()
         {
             string tenDangNhap = txtTaiKhoan.Text.Trim();
@@ -258,7 +211,6 @@ namespace QuanLyCongViec
             return DatabaseHelper.ExecuteStoredProcedure("sp_UserLogin", thamSo);
         }
         //Xử lý kết quả đăng nhập từ database
-        //<param name="ketQuaDangNhap">Kết quả trả về từ stored procedure</param>
         private void ProcessLoginResult(DataTable ketQuaDangNhap)
         {
             if (ketQuaDangNhap == null || ketQuaDangNhap.Rows.Count == 0)
@@ -287,14 +239,11 @@ namespace QuanLyCongViec
             HandleSuccessfulLogin(dongNguoiDung);
         }
         //Kiểm tra xem kết quả có chứa ErrorCode không
-        //<param name="dongNguoiDung">Dòng dữ liệu từ database</param>
-        //<returns>True nếu có ErrorCode, False nếu không</returns>
         private bool HasErrorCode(DataRow dongNguoiDung)
         {
             return dongNguoiDung.Table.Columns.Contains("ErrorCode");
         }
         //Xử lý response có ErrorCode từ stored procedure
-        //<param name="dongNguoiDung">Dòng dữ liệu từ database</param>
         private void HandleErrorCodeResponse(DataRow dongNguoiDung)
         {
             object maLoiObj = dongNguoiDung["ErrorCode"];
@@ -322,7 +271,6 @@ namespace QuanLyCongViec
             }
         }
         //Hiển thị thông báo tài khoản bị vô hiệu hóa
-        //<param name="thongBaoLoi">Thông báo lỗi từ database</param>
         private void ShowAccountDisabledMessage(string thongBaoLoi)
         {
             string thongBao = $"Tài khoản đã bị khóa hoặc vô hiệu hóa!\n\n{thongBaoLoi}\n\nVui lòng liên hệ quản trị viên.";
@@ -335,14 +283,11 @@ namespace QuanLyCongViec
             );
         }
         //Kiểm tra mã người dùng có null không
-        //<param name="dongNguoiDung">Dòng dữ liệu từ database</param>
-        //<returns>True nếu mã người dùng null, False nếu không</returns>
         private bool IsUserIdNull(DataRow dongNguoiDung)
         {
             return dongNguoiDung["Id"] == null || dongNguoiDung["Id"] == DBNull.Value;
         }
         //Xử lý khi đăng nhập thành công
-        //<param name="dongNguoiDung">Dòng dữ liệu chứa thông tin người dùng</param>
         private void HandleSuccessfulLogin(DataRow dongNguoiDung)
         {
             int maNguoiDung = Convert.ToInt32(dongNguoiDung["Id"]);
@@ -377,7 +322,6 @@ namespace QuanLyCongViec
             _thoiGianKhoaDen = null;
         }
         //Lưu hoặc xóa thông tin đăng nhập tùy theo checkbox "Ghi nhớ"
-        //<param name="tenDangNhap">Tên đăng nhập cần lưu</param>
         private void SaveOrClearRememberedCredentials(string tenDangNhap)
         {
             if (chkGhiNhoDangNhap.Checked)
@@ -390,7 +334,6 @@ namespace QuanLyCongViec
             }
         }
         //Hiển thị thông báo đăng nhập thành công
-        //<param name="hoTen">Họ tên của người dùng</param>
         private void ShowSuccessMessage(string hoTen)
         {
             MessageBox.Show(
@@ -446,7 +389,6 @@ namespace QuanLyCongViec
             txtMatKhau.Focus();
         }
         //Hiển thị thông báo lỗi khi có exception xảy ra
-        //<param name="loi">Exception xảy ra</param>
         private void ShowLoginError(Exception loi)
         {
             MessageBox.Show(
@@ -457,7 +399,6 @@ namespace QuanLyCongViec
             );
         }
         //Lưu thông tin đăng nhập vào Settings (chỉ lưu tên đăng nhập, không lưu mật khẩu)
-        //<param name="tenDangNhap">Tên đăng nhập cần lưu</param>
         private void SaveRememberedCredentials(string tenDangNhap)
         {
             try

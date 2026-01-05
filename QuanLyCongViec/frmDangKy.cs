@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Data;
 using System.Data.SqlClient;
-using System.Linq;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
 using QuanLyCongViec.DataAccess;
@@ -12,7 +11,6 @@ namespace QuanLyCongViec
     //Form đăng ký tài khoản mới cho hệ thống Quản lý Công việc
     public partial class frmDangKy : Form
     {
-
         #region Properties - Thuộc tính
         //Username đã đăng ký thành công (để trả về form đăng nhập)
         public string RegisteredUsername { get; private set; }
@@ -28,16 +26,12 @@ namespace QuanLyCongViec
 
         #region Event Handlers - Xử lý sự kiện
         //Xử lý sự kiện click nút Đăng ký
-        //<param name="sender">Đối tượng gửi sự kiện</param>
-        //<param name="e">Thông tin sự kiện</param>
         private void btnXacNhan_Click(object sender, EventArgs e)
         {
             PerformRegister();
         }
         //Xử lý sự kiện click link Đăng nhập
         //Đóng form và quay về form đăng nhập
-        //<param name="sender">Đối tượng gửi sự kiện</param>
-        //<param name="e">Thông tin sự kiện</param>
         private void linklblDangNhap_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
             CloseAndReturnToLogin();
@@ -52,7 +46,7 @@ namespace QuanLyCongViec
             this.Close();
         }
         //Thực hiện quá trình đăng ký tài khoản mới
-        //Bao gồm: validate input, hash password, gọi stored procedure, xử lý kết quả
+        //Bao gồm: validate input, gọi stored procedure, xử lý kết quả
         private void PerformRegister()
         {
             try
@@ -64,7 +58,7 @@ namespace QuanLyCongViec
                 }
                 // Lấy thông tin từ form
                 RegistrationData duLieuDangKy = GetRegistrationData();
-                // Đăng ký tài khoản vào database (không hash password)
+                // Đăng ký tài khoản vào database
                 int maNguoiDung = RegisterUserToDatabase(duLieuDangKy, duLieuDangKy.Password);
                 // Xử lý kết quả đăng ký
                 ProcessRegistrationResult(maNguoiDung, duLieuDangKy);
@@ -75,10 +69,7 @@ namespace QuanLyCongViec
             }
         }
 
-        
         //Lấy dữ liệu đăng ký từ các control trên form
-        
-        //<returns>Đối tượng chứa thông tin đăng ký</returns>
         private RegistrationData GetRegistrationData()
         {
             return new RegistrationData
@@ -90,12 +81,7 @@ namespace QuanLyCongViec
             };
         }
 
-        
         //Đăng ký user vào database thông qua stored procedure
-        
-        //<param name="duLieuDangKy">Thông tin đăng ký</param>
-        //<param name="matKhau">Mật khẩu (không hash)</param>
-        //<returns>Mã người dùng nếu thành công, mã lỗi nếu thất bại</returns>
         private int RegisterUserToDatabase(RegistrationData duLieuDangKy, string matKhau)
         {
             SqlParameter thamSoMaNguoiDung = new SqlParameter("@UserId", SqlDbType.Int)
@@ -115,16 +101,11 @@ namespace QuanLyCongViec
             try
             {
                 int rowsAffected = DatabaseHelper.ExecuteStoredProcedureNonQuery("sp_UserRegister", thamSo);
-
-                // Lấy giá trị mã người dùng từ output parameter
-                // Output parameter sẽ được cập nhật sau khi ExecuteNonQuery hoàn thành
                 if (thamSoMaNguoiDung.Value != null && thamSoMaNguoiDung.Value != DBNull.Value)
                 {
                     int userId = Convert.ToInt32(thamSoMaNguoiDung.Value);
                     return userId;
                 }
-
-                // Nếu không có output parameter, có thể stored procedure không chạy đúng
                 return 0;
             }
             catch (Exception ex)
@@ -134,11 +115,7 @@ namespace QuanLyCongViec
             }
         }
 
-        
         //Xử lý kết quả đăng ký từ database
-        
-        //<param name="maNguoiDung">Mã người dùng hoặc mã lỗi từ stored procedure</param>
-        //<param name="duLieuDangKy">Thông tin đăng ký</param>
         private void ProcessRegistrationResult(int maNguoiDung, RegistrationData duLieuDangKy)
         {
             // Lấy các mã lỗi từ database
@@ -163,11 +140,7 @@ namespace QuanLyCongViec
             }
         }
 
-        
         //Xử lý khi đăng ký thành công
-        
-        //<param name="maNguoiDung">Mã người dùng của tài khoản mới</param>
-        //<param name="duLieuDangKy">Thông tin đăng ký</param>
         private void HandleSuccessfulRegistration(int maNguoiDung, RegistrationData duLieuDangKy)
         {
             RegisteredUsername = duLieuDangKy.Username;
@@ -188,9 +161,7 @@ namespace QuanLyCongViec
             this.Close();
         }
 
-        
         //Xử lý lỗi username đã tồn tại
-        
         private void HandleUsernameExistsError()
         {
             string thongBaoLoi = "Tên đăng nhập đã được sử dụng!\n\nVui lòng chọn tên đăng nhập khác.";
@@ -204,10 +175,8 @@ namespace QuanLyCongViec
 
             FocusAndSelectAll(txtTaiKhoan);
         }
-
         
-        //Xử lý lỗi email đã tồn tại
-        
+        //Xử lý lỗi email đã tồn tại        
         private void HandleEmailExistsError()
         {
             string thongBaoLoi = "Email đã được sử dụng!\n\nVui lòng sử dụng email khác.";
@@ -222,9 +191,7 @@ namespace QuanLyCongViec
             FocusAndSelectAll(txtEmail);
         }
 
-        
-        //Xử lý lỗi không xác định khi đăng ký
-        
+        //Xử lý lỗi không xác định khi đăng ký        
         private void HandleUnknownRegistrationError()
         {
             MessageBox.Show(
@@ -234,11 +201,8 @@ namespace QuanLyCongViec
                 MessageBoxIcon.Error
             );
         }
-
         
         //Focus vào control và select all text
-        
-        //<param name="control">Control cần focus</param>
         private void FocusAndSelectAll(Control control)
         {
             control.Focus();
@@ -248,10 +212,7 @@ namespace QuanLyCongViec
             }
         }
 
-        
         //Hiển thị thông báo lỗi khi có exception xảy ra
-        
-        //<param name="loi">Exception xảy ra</param>
         private void ShowRegistrationError(Exception loi)
         {
             MessageBox.Show(
@@ -262,10 +223,7 @@ namespace QuanLyCongViec
             );
         }
 
-        
         //Validate toàn bộ dữ liệu đầu vào của form đăng ký
-        
-        //<returns>True nếu tất cả dữ liệu hợp lệ, False nếu có lỗi</returns>
         private bool ValidateInput()
         {
             return ValidateUsername() &&
@@ -276,10 +234,7 @@ namespace QuanLyCongViec
                    ValidateTermsAndConditions();
         }
 
-        
         //Validate tên đăng nhập
-        
-        //<returns>True nếu hợp lệ, False nếu không</returns>
         private bool ValidateUsername()
         {
             if (string.IsNullOrWhiteSpace(txtTaiKhoan.Text))
@@ -314,10 +269,7 @@ namespace QuanLyCongViec
             return true;
         }
 
-        
         //Validate mật khẩu
-        
-        //<returns>True nếu hợp lệ, False nếu không</returns>
         private bool ValidatePassword()
         {
             if (string.IsNullOrWhiteSpace(txtMatKhau.Text))
@@ -343,21 +295,10 @@ namespace QuanLyCongViec
                 return false;
             }
 
-            // Kiểm tra độ phức tạp mật khẩu
-            string loiMatKhau = ValidatePasswordStrength(matKhau);
-            if (!string.IsNullOrEmpty(loiMatKhau))
-            {
-                ShowValidationError(loiMatKhau, txtMatKhau);
-                return false;
-            }
-
             return true;
         }
 
-        
         //Validate xác nhận mật khẩu
-        
-        //<returns>True nếu hợp lệ, False nếu không</returns>
         private bool ValidatePasswordConfirmation()
         {
             if (string.IsNullOrWhiteSpace(txtXacNhanMatKhau.Text))
@@ -375,10 +316,7 @@ namespace QuanLyCongViec
             return true;
         }
 
-        
         //Validate họ tên
-        
-        //<returns>True nếu hợp lệ, False nếu không</returns>
         private bool ValidateFullName()
         {
             if (string.IsNullOrWhiteSpace(txtHoTen.Text))
@@ -398,10 +336,7 @@ namespace QuanLyCongViec
             return true;
         }
 
-        
         //Validate email
-        
-        //<returns>True nếu hợp lệ, False nếu không</returns>
         private bool ValidateEmail()
         {
             if (string.IsNullOrWhiteSpace(txtEmail.Text))
@@ -428,10 +363,7 @@ namespace QuanLyCongViec
             return true;
         }
 
-        
         //Validate checkbox đồng ý điều khoản
-        
-        //<returns>True nếu đã check, False nếu chưa</returns>
         private bool ValidateTermsAndConditions()
         {
             if (!chkDongYDieuKhoan.Checked)
@@ -443,11 +375,7 @@ namespace QuanLyCongViec
             return true;
         }
 
-        
         //Hiển thị thông báo lỗi validation và focus vào control tương ứng
-        
-        //<param name="message">Thông báo lỗi</param>
-        //<param name="control">Control cần focus</param>
         private void ShowValidationError(string message, Control control)
         {
             MessageBox.Show(
@@ -466,25 +394,7 @@ namespace QuanLyCongViec
             }
         }
 
-        
-        //Kiểm tra độ phức tạp mật khẩu
-        //Hiện tại chỉ yêu cầu độ dài tối thiểu
-        //Có thể mở rộng thêm yêu cầu: chữ hoa, chữ thường, số, ký tự đặc biệt
-        
-        //<param name="matKhau">Mật khẩu cần kiểm tra</param>
-        //<returns>Thông báo lỗi nếu không hợp lệ, null nếu hợp lệ</returns>
-        private string ValidatePasswordStrength(string matKhau)
-        {
-            // Hiện tại chỉ yêu cầu độ dài tối thiểu
-            // Có thể mở rộng thêm yêu cầu: chữ hoa, chữ thường, số, ký tự đặc biệt
-            return null;
-        }
-
-        
         //Kiểm tra email có hợp lệ không bằng regex pattern
-        
-        //<param name="thuDienTu">Email cần kiểm tra</param>
-        //<returns>True nếu email hợp lệ, False nếu không</returns>
         private bool IsValidEmail(string thuDienTu)
         {
             if (string.IsNullOrWhiteSpace(thuDienTu))

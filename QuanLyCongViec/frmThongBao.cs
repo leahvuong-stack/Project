@@ -1,93 +1,48 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
+using System.Data.SqlClient;
 using System.Drawing;
 using System.Windows.Forms;
 using System.Linq;
+using QuanLyCongViec.DataAccess;
+using QuanLyCongViec.Helpers;
 
 namespace QuanLyCongViec
 {
     public partial class frmThongBao : Form
     {
-        // Dùng static để tránh việc lặp lại tên User do trùng seed thời gian
-        private static readonly Random _rnd = new Random();
+        private int _userId;
         private string _currentUserName = "";
-        private List<string[]> _originalJobsForUser = new List<string[]>();
 
-        private List<string[]> _jobPool = new List<string[]>()
-        {
-            new[] { "Làm đồ án", "10/01/2026", "Cao", "3 ngày", "Chưa hoàn thành" },
-            new[] { "Học tiếng Anh", "08/01/2026", "Trung bình", "1 ngày", "Đang làm" },
-            new[] { "Đi chơi", "07/01/2026", "Thấp", "Hôm nay", "Hoàn thành" },
-            new[] { "Viết báo cáo", "09/01/2026", "Cao", "2 ngày", "Chưa hoàn thành" },
-            new[] { "Test phần mềm", "11/01/2026", "Trung bình", "4 ngày", "Chưa hoàn thành" },
-            new[] { "Deploy hệ thống", "12/01/2026", "Cao", "5 ngày", "Chưa hoàn thành" },
-            new[] { "Họp nhóm", "13/01/2026", "Trung bình", "6 ngày", "Chưa hoàn thành" },
-            new[] { "Nghiên cứu AI", "15/01/2026", "Cao", "8 ngày", "Chưa hoàn thành" },
-            new[] { "Gửi mail khách hàng", "17/01/2026", "Cao", "10 ngày", "Chưa hoàn thành" },
-            new[] { "Sửa lỗi giao diện", "19/01/2026", "Trung bình", "12 ngày", "Chưa hoàn thành" }
-        };
-
-        public frmThongBao()
+        public frmThongBao(int userId = 0)
         {
             InitializeComponent();
+            _userId = userId;
+
+            // Lấy UserId từ CurrentUser nếu không được truyền vào
+            if (_userId == 0)
+            {
+                _userId = CurrentUser.GetUserId();
+            }
+            _currentUserName = CurrentUser.GetFullName();
             this.Load += (s, e) => {
                 SetupGrid();
-                InitNewSession();
+                HienThiDanhSach();
             };
 
-            btnThem.Click += btnThem_Click;
+            // Đăng ký event handlers cho các buttons
+            btnMarkAsRead.Click += btnMarkAsRead_Click;
+            btnDelete.Click += btnDelete_Click;
 
-            // TẢI LẠI: Khôi phục dữ liệu gốc của User đó (Reset thao tác Xóa/Sửa)
+            // TẢI LẠI: Load lại dữ liệu từ database
             btnReload.Click += (s, e) => {
-                LoadDataFromOriginal();
-                MessageBox.Show($"Đã reset dữ liệu gốc cho: {_currentUserName}", "Tải lại");
-            };
-
-            btnDelete.Click += (s, e) => {
-                if (dgvThongBao.SelectedRows.Count > 0) dgvThongBao.Rows.RemoveAt(dgvThongBao.SelectedRows[0].Index);
+                HienThiDanhSach();
+                MessageBox.Show("Đã tải lại danh sách thông báo!", "Tải lại", 
+                    MessageBoxButtons.OK, MessageBoxIcon.Information);
             };
 
             btnClose.Click += (s, e) => this.Close();
-
-            btnMarkAsRead.Click += (s, e) => {
-                if (dgvThongBao.SelectedRows.Count > 0)
-                {
-                    dgvThongBao.SelectedRows[0].Cells["TrangThai"].Value = "Hoàn thành";
-                    UpdateFormatting();
-                }
-            };
-        }
-
-        private void InitNewSession()
-        {
-            // 20 User đầy đủ - Shuffle để không bị lặp
-            string[] users = {
-                "Nguyễn Văn An", "Trần Thị Bình", "Lê Văn Cường", "Phạm Thị Dung",
-                "Hoàng Văn Đức", "Ngô Thị Hương", "Vũ Văn Hùng", "Đỗ Thị Lan",
-                "Bùi Văn Minh", "Lý Thị Nga", "Đinh Văn Phong", "Mai Thị Quỳnh",
-                "Tạ Văn Sơn", "Võ Thị Trang", "Phan Văn Tuấn", "Hồ Thị Uyên",
-                "Dương Văn Việt", "Lưu Thị Yến", "Chu Văn Bảo", "Trịnh Thị Châu"
-            };
-
-            _currentUserName = users.OrderBy(x => _rnd.Next()).First();
-            this.Text = "🔔 Thông Báo - " + _currentUserName;
-
-            // Bốc 8 việc ngẫu nhiên từ kho
-            _originalJobsForUser = _jobPool.OrderBy(x => _rnd.Next()).Take(8).ToList();
-
-            LoadDataFromOriginal();
-        }
-
-        private void LoadDataFromOriginal()
-        {
-            dgvThongBao.Rows.Clear();
-            int i = 1;
-            foreach (var job in _originalJobsForUser)
-            {
-                dgvThongBao.Rows.Add(_currentUserName, "CV" + i, job[0], job[1], job[2], job[3], job[4]);
-                i++;
-            }
-            UpdateFormatting();
         }
 
         private void SetupGrid()
@@ -107,17 +62,126 @@ namespace QuanLyCongViec
             dgvThongBao.Columns.Add("TrangThai", "Trạng thái");
         }
 
-        private void btnThem_Click(object sender, EventArgs e)
+        private void HienThiDanhSach()
         {
-            Form f = new Form() { Width = 350, Height = 150, Text = "Thêm mới", StartPosition = FormStartPosition.CenterParent };
-            TextBox t = new TextBox() { Left = 20, Top = 20, Width = 280 };
-            Button b = new Button() { Text = "OK", Left = 220, Top = 60, DialogResult = DialogResult.OK };
-            f.Controls.Add(t); f.Controls.Add(b);
-
-            if (f.ShowDialog() == DialogResult.OK && !string.IsNullOrEmpty(t.Text))
+            try
             {
-                dgvThongBao.Rows.Add(_currentUserName, "CV" + (dgvThongBao.Rows.Count + 1), t.Text, "04/01/2026", "Thường", "Mới", "Chưa hoàn thành");
+                dgvThongBao.Rows.Clear();
+
+                // Lấy tasks quá hạn và sắp đến hạn (trong 7 ngày tới)
+                // Gọi 2 lần: một lần cho overdue, một lần cho due soon, sau đó merge và loại bỏ duplicates
+                DataTable dtOverdue = DatabaseHelper.ExecuteStoredProcedure("sp_GetTasksByFilter",
+                    new SqlParameter("@UserId", _userId),
+                    new SqlParameter("@IsOverdue", true)
+                );
+
+                DataTable dtDueSoon = DatabaseHelper.ExecuteStoredProcedure("sp_GetTasksByFilter",
+                    new SqlParameter("@UserId", _userId),
+                    new SqlParameter("@IsDueSoon", true)
+                );
+
+                // Merge và loại bỏ duplicates bằng Dictionary
+                Dictionary<int, DataRow> taskDict = new Dictionary<int, DataRow>();
+
+                if (dtOverdue != null)
+                {
+                    foreach (DataRow row in dtOverdue.Rows)
+                    {
+                        int taskId = Convert.ToInt32(row["Id"]);
+                        if (!taskDict.ContainsKey(taskId))
+                        {
+                            taskDict[taskId] = row;
+                        }
+                    }
+                }
+
+                if (dtDueSoon != null)
+                {
+                    foreach (DataRow row in dtDueSoon.Rows)
+                    {
+                        int taskId = Convert.ToInt32(row["Id"]);
+                        if (!taskDict.ContainsKey(taskId))
+                        {
+                            taskDict[taskId] = row;
+                        }
+                    }
+                }
+
+                // Hiển thị dữ liệu vào DataGridView
+                foreach (DataRow row in taskDict.Values)
+                {
+                    string nguoiDung = row["UserFullName"]?.ToString() ?? "";
+                    string maCV = "CV" + row["Id"].ToString();
+                    string tieuDe = row["Title"]?.ToString() ?? "";
+                    DateTime dueDate = Convert.ToDateTime(row["DueDate"]);
+                    string hanChot = dueDate.ToString("dd/MM/yyyy");
+                    string uuTien = ConvertPriority(row["Priority"]?.ToString() ?? "");
+                    string conNgay = TinhSoNgayConLai(dueDate);
+                    string trangThai = ConvertStatus(row["Status"]?.ToString() ?? "");
+
+                    DataGridViewRow newRow = dgvThongBao.Rows[dgvThongBao.Rows.Add(nguoiDung, maCV, tieuDe, hanChot, uuTien, conNgay, trangThai)];
+                    // Lưu TaskId vào Tag để dễ lấy lại sau này
+                    newRow.Tag = Convert.ToInt32(row["Id"]);
+                }
+
+                // Cập nhật tiêu đề form
+                if (string.IsNullOrEmpty(_currentUserName))
+                {
+                    _currentUserName = CurrentUser.GetFullName();
+                }
+                this.Text = "🔔 Thông Báo - " + _currentUserName;
+
                 UpdateFormatting();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Lỗi khi tải danh sách thông báo: " + ex.Message, "Lỗi",
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        private string ConvertPriority(string priority)
+        {
+            switch (priority)
+            {
+                case "High": return "Cao";
+                case "Medium": return "Trung bình";
+                case "Low": return "Thấp";
+                default: return priority;
+            }
+        }
+
+        private string ConvertStatus(string status)
+        {
+            switch (status)
+            {
+                case "Todo": return "Chưa bắt đầu";
+                case "Doing": return "Đang làm";
+                case "Done": return "Hoàn thành";
+                default: return status;
+            }
+        }
+
+        private string TinhSoNgayConLai(DateTime dueDate)
+        {
+            DateTime today = DateTime.Today;
+            int soNgay = (dueDate.Date - today).Days;
+
+            if (soNgay < 0)
+            {
+                return Math.Abs(soNgay) + " ngày quá hạn";
+            }
+            else if (soNgay == 0)
+            {
+                return "Hôm nay";
+            }
+            else if (soNgay == 1)
+            {
+                return "1 ngày";
+            }
+            else
+            {
+                return soNgay + " ngày";
             }
         }
 
@@ -128,17 +192,107 @@ namespace QuanLyCongViec
                 string tt = row.Cells["TrangThai"].Value?.ToString();
                 string cn = row.Cells["ConNgay"].Value?.ToString();
 
-                if (tt == "Chưa hoàn thành") row.DefaultCellStyle.ForeColor = Color.Red;
+                // Đặt màu chữ theo trạng thái
+                if (tt == "Chưa bắt đầu") row.DefaultCellStyle.ForeColor = Color.Red;
                 else if (tt == "Đang làm") row.DefaultCellStyle.ForeColor = Color.Orange;
-                else row.DefaultCellStyle.ForeColor = Color.Green;
+                else if (tt == "Hoàn thành") row.DefaultCellStyle.ForeColor = Color.Green;
+                else row.DefaultCellStyle.ForeColor = Color.Black;
 
+                // Đặt màu nền theo số ngày còn lại
                 if (cn == "Hôm nay") row.DefaultCellStyle.BackColor = Color.Yellow;
+                else if (cn.Contains("quá hạn")) row.DefaultCellStyle.BackColor = Color.LightCoral;
                 else row.DefaultCellStyle.BackColor = Color.White;
+            }
+        }
 
-                if (row.Cells["MaCV"].Value?.ToString() == "CV1")
+        private void btnMarkAsRead_Click(object sender, EventArgs e)
+        {
+            if (dgvThongBao.SelectedRows.Count == 0)
+            {
+                MessageBox.Show("Vui lòng chọn một công việc để đánh dấu hoàn thành!", "Thông báo",
+                    MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
+            DataGridViewRow selectedRow = dgvThongBao.SelectedRows[0];
+            int taskId = (int)selectedRow.Tag;
+
+            try
+            {
+                // Lấy thông tin task hiện tại từ database
+                DataTable dtTask = DatabaseHelper.ExecuteStoredProcedure("sp_GetTaskById",
+                    new SqlParameter("@TaskId", taskId));
+
+                if (dtTask == null || dtTask.Rows.Count == 0)
                 {
-                    row.DefaultCellStyle.BackColor = Color.FromArgb(0, 112, 192);
-                    row.DefaultCellStyle.ForeColor = Color.White;
+                    MessageBox.Show("Không tìm thấy công việc!", "Lỗi",
+                        MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return;
+                }
+
+                DataRow taskRow = dtTask.Rows[0];
+
+                // Cập nhật Status = 'Done' và giữ nguyên các field khác
+                SqlParameter[] parameters = 
+                {
+                    new SqlParameter("@TaskId", taskId),
+                    new SqlParameter("@Title", taskRow["Title"].ToString()),
+                    new SqlParameter("@Description", taskRow["Description"] ?? DBNull.Value),
+                    new SqlParameter("@UserId", _userId),
+                    new SqlParameter("@Priority", taskRow["Priority"].ToString()),
+                    new SqlParameter("@Status", "Done"),
+                    new SqlParameter("@Category", taskRow["Category"].ToString()),
+                    new SqlParameter("@DueDate", Convert.ToDateTime(taskRow["DueDate"]))
+                };
+
+                DatabaseHelper.ExecuteStoredProcedureNonQuery("sp_UpdateTask", parameters);
+
+                // Reload danh sách
+                HienThiDanhSach();
+                MessageBox.Show("Đánh dấu hoàn thành thành công!", "Thông báo",
+                    MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Lỗi khi đánh dấu hoàn thành: " + ex.Message, "Lỗi",
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        private void btnDelete_Click(object sender, EventArgs e)
+        {
+            if (dgvThongBao.SelectedRows.Count == 0)
+            {
+                MessageBox.Show("Vui lòng chọn một công việc để xóa!", "Thông báo",
+                    MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
+            DataGridViewRow selectedRow = dgvThongBao.SelectedRows[0];
+            int taskId = (int)selectedRow.Tag;
+
+            if (MessageBox.Show("Bạn có chắc muốn xóa công việc này?", "Xác nhận xóa",
+                MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
+            {
+                try
+                {
+                    SqlParameter[] parameters = 
+                    {
+                        new SqlParameter("@TaskId", taskId),
+                        new SqlParameter("@UserId", _userId)
+                    };
+
+                    DatabaseHelper.ExecuteStoredProcedureNonQuery("sp_DeleteTask", parameters);
+
+                    // Reload danh sách
+                    HienThiDanhSach();
+                    MessageBox.Show("Xóa công việc thành công!", "Thông báo",
+                        MessageBoxButtons.OK, MessageBoxIcon.Information);
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("Lỗi khi xóa công việc: " + ex.Message, "Lỗi",
+                        MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
             }
         }

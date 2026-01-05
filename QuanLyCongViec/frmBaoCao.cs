@@ -15,8 +15,6 @@ namespace QuanLyCongViec
         {
             InitializeComponent();
             _userId = userId;
-            Helpers.FontHelper.SetUnicodeFont(this);
-            Helpers.FontHelper.SetUnicodeFontForDataGridView(dgvBaoCao);
             CapNhatThongKe();
         }
 

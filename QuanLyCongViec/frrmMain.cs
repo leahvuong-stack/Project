@@ -40,8 +40,7 @@ namespace QuanLyCongViec
             CapNhatDashboard();      // Load số liệu Dashboard
             KhoiTaoTimer();          // Khởi tạo đồng hồ thời gian
 
-
-            // Thiết lập màu sắc cho các panel
+// Thiết lập màu sắc cho các panel
             panel_Tong.BackColor = ColorTranslator.FromHtml("#4C84FF");
             panel_Todo.BackColor = ColorTranslator.FromHtml("#6AA9FF");
             panel_Doing.BackColor = ColorTranslator.FromHtml("#FFC94D");
@@ -146,6 +145,20 @@ namespace QuanLyCongViec
             frmThemSuaTask taskForm = new frmThemSuaTask(_currentUserId);
             taskForm.ShowDialog();
             CapNhatDashboard(); // Refresh sau khi đóng
+        }
+
+        // Mở form thông báo
+        private void btn_ThongBao_Click(object sender, EventArgs e)
+        {
+            frmThongBao thongBaoForm = new frmThongBao(_currentUserId);
+            thongBaoForm.ShowDialog();
+        }
+
+        // Mở form hướng dẫn
+        private void btn_Help_Click(object sender, EventArgs e)
+        {
+            frmHuongDan huongDanForm = new frmHuongDan();
+            huongDanForm.ShowDialog();
         }
 
         // Xử lý đăng xuất

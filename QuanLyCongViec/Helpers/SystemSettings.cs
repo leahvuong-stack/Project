@@ -6,51 +6,32 @@ using System.Data.SqlClient;
 
 namespace QuanLyCongViec.Helpers
 {
-    /// <summary>
-    /// Class lấy các cấu hình hệ thống từ database
-    /// Không cần hardcode constants, tự động lấy từ database
-    /// </summary>
     public static class SystemSettings
     {
         // Cache để tránh query database nhiều lần
         private static Dictionary<string, string> _cache = new Dictionary<string, string>();
         private static bool _isLoaded = false;
 
-        /// <summary>
-        /// Lấy số lần đăng nhập sai tối đa cho phép
-        /// </summary>
         public static int MaxLoginAttempts
         {
             get { return GetIntSetting("MAX_LOGIN_ATTEMPTS", 5); }
         }
 
-        /// <summary>
-        /// Lấy thời gian khóa tài khoản (tính bằng phút)
-        /// </summary>
         public static int LockoutMinutes
         {
             get { return GetIntSetting("LOCKOUT_MINUTES", 15); }
         }
 
-        /// <summary>
-        /// Lấy mã lỗi: Username đã tồn tại
-        /// </summary>
         public static int ErrorUsernameExists
         {
             get { return GetIntSetting("ERROR_USERNAME_EXISTS", -1); }
         }
 
-        /// <summary>
-        /// Lấy mã lỗi: Email đã tồn tại
-        /// </summary>
         public static int ErrorEmailExists
         {
             get { return GetIntSetting("ERROR_EMAIL_EXISTS", -2); }
         }
 
-        /// <summary>
-        /// Lấy giá trị cấu hình dạng số nguyên từ database
-        /// </summary>
         private static int GetIntSetting(string settingKey, int defaultValue)
         {
             string value = GetSetting(settingKey);
@@ -61,9 +42,6 @@ namespace QuanLyCongViec.Helpers
             return defaultValue; // Fallback nếu không lấy được
         }
 
-        /// <summary>
-        /// Lấy giá trị cấu hình từ cache hoặc database
-        /// </summary>
         private static string GetSetting(string settingKey)
         {
             // Load từ database lần đầu tiên
@@ -82,9 +60,6 @@ namespace QuanLyCongViec.Helpers
             return null;
         }
 
-        /// <summary>
-        /// Load tất cả các cấu hình từ database thông qua stored procedure
-        /// </summary>
         private static void LoadSettingsFromDatabase()
         {
             try
@@ -110,9 +85,6 @@ namespace QuanLyCongViec.Helpers
             }
         }
 
-        /// <summary>
-        /// Lấy giá trị cấu hình cụ thể từ database (không cache)
-        /// </summary>
         public static string GetSettingValue(string settingKey)
         {
             try
@@ -137,9 +109,6 @@ namespace QuanLyCongViec.Helpers
             return null;
         }
 
-        /// <summary>
-        /// Reset cache để load lại từ database (dùng khi cần refresh)
-        /// </summary>
         public static void Reset()
         {
             _cache.Clear();
@@ -147,4 +116,3 @@ namespace QuanLyCongViec.Helpers
         }
     }
 }
-

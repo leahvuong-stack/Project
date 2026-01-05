@@ -6,7 +6,6 @@
         private System.Windows.Forms.DataGridView dgvThongBao;
         private System.Windows.Forms.Button btnMarkAsRead;
         private System.Windows.Forms.Button btnDelete;
-        private System.Windows.Forms.Button btnThem;
         private System.Windows.Forms.Button btnReload;
         private System.Windows.Forms.Button btnClose;
 
@@ -21,7 +20,6 @@
             this.dgvThongBao = new System.Windows.Forms.DataGridView();
             this.btnMarkAsRead = new System.Windows.Forms.Button();
             this.btnDelete = new System.Windows.Forms.Button();
-            this.btnThem = new System.Windows.Forms.Button();
             this.btnReload = new System.Windows.Forms.Button();
             this.btnClose = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.dgvThongBao)).BeginInit();
@@ -43,13 +41,8 @@
             this.btnDelete.Size = new System.Drawing.Size(80, 35);
             this.btnDelete.Text = "Xóa";
 
-            // btnThem
-            this.btnThem.Location = new System.Drawing.Point(254, 455);
-            this.btnThem.Size = new System.Drawing.Size(120, 35);
-            this.btnThem.Text = "Thêm thông báo";
-
             // btnReload
-            this.btnReload.Location = new System.Drawing.Point(380, 455);
+            this.btnReload.Location = new System.Drawing.Point(254, 455);
             this.btnReload.Size = new System.Drawing.Size(80, 35);
             this.btnReload.Text = "Tải lại";
 
@@ -65,7 +58,7 @@
             this.ClientSize = new System.Drawing.Size(984, 502);
             this.Controls.AddRange(new System.Windows.Forms.Control[] {
                 this.dgvThongBao, this.btnMarkAsRead, this.btnDelete,
-                this.btnThem, this.btnReload, this.btnClose
+                this.btnReload, this.btnClose
             });
             this.Name = "frmThongBao";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;

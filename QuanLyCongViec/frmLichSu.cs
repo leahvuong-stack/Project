@@ -12,9 +12,6 @@ namespace QuanLyCongViec
         public frmLichSu()
         {
             InitializeComponent();
-            Helpers.FontHelper.SetUnicodeFont(this);
-            Helpers.FontHelper.SetUnicodeFontForDataGridView(dgvLichSu);
-
             // Nhấn phím Enter để tìm kiếm
             txtTimKiem.KeyDown += (s, e) =>
             {
@@ -25,7 +22,7 @@ namespace QuanLyCongViec
                 }
             };
 
-            HienThiDanhSach();
+            // Không gọi HienThiDanhSach() ở đây, chuyển sang Load event để tránh lỗi với AutoSizeColumnsMode
         }
 
         private void HienThiDanhSach()
@@ -36,6 +33,7 @@ namespace QuanLyCongViec
                 
                 if (dt != null && dt.Rows.Count > 0)
                 {
+                    dgvLichSu.SuspendLayout();
                     dgvLichSu.DataSource = dt;
                     
                     // Định dạng cột ngày tháng
@@ -59,6 +57,10 @@ namespace QuanLyCongViec
                         dgvLichSu.Columns["DoUuTien"].HeaderText = "Độ Ưu Tiên";
                     if (dgvLichSu.Columns["ChiTiet"] != null)
                         dgvLichSu.Columns["ChiTiet"].HeaderText = "Chi Tiết";
+                    
+                    dgvLichSu.ResumeLayout();
+                    
+                    // Reset các control tìm kiếm
                     txtTimKiem.Text = "";
                     rbMaDG.Checked = true;
                 }
@@ -167,6 +169,7 @@ namespace QuanLyCongViec
                 
                 if (dt != null && dt.Rows.Count > 0)
                 {
+                    dgvLichSu.SuspendLayout();
                     dgvLichSu.DataSource = dt;
                     
                     // Định dạng cột ngày tháng
@@ -190,6 +193,8 @@ namespace QuanLyCongViec
                         dgvLichSu.Columns["DoUuTien"].HeaderText = "Độ Ưu Tiên";
                     if (dgvLichSu.Columns["ChiTiet"] != null)
                         dgvLichSu.Columns["ChiTiet"].HeaderText = "Chi Tiết";
+                    
+                    dgvLichSu.ResumeLayout();
                 }
                 else
                 {
@@ -207,6 +212,7 @@ namespace QuanLyCongViec
 
         private void frmLichSu_Load(object sender, EventArgs e)
         {
+            HienThiDanhSach();
         }
     }
 }
