@@ -48,6 +48,18 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="DataAccess\DatabaseHelper.cs" />
+    <Compile Include="Controls\CalendarView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\CalendarView.Designer.cs">
+      <DependentUpon>CalendarView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="frmThoiKhoaBieu.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="frmThoiKhoaBieu.Designer.cs">
+      <DependentUpon>frmThoiKhoaBieu.cs</DependentUpon>
+    </Compile>
     <Compile Include="frmChiTietTask.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -127,6 +139,9 @@
     <EmbeddedResource Include="frmBaoCao.resx">
       <DependentUpon>frmBaoCao.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Controls\CalendarView.resx">
+      <DependentUpon>CalendarView.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="frmDangNhap.resx">
       <DependentUpon>frmDangNhap.cs</DependentUpon>
     </EmbeddedResource>
@@ -141,6 +156,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="frmThemSuaTask.resx">
       <DependentUpon>frmThemSuaTask.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="frmThoiKhoaBieu.resx">
+      <DependentUpon>frmThoiKhoaBieu.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>

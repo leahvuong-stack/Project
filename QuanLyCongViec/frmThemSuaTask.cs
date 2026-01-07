@@ -19,6 +19,10 @@ namespace QuanLyCongViec
             Helpers.FontHelper.SetUnicodeFont(this);
             Helpers.FontHelper.SetUnicodeFontForDataGridView(dgvCongViec);
             
+            // Cấu hình DataGridView để cho phép xuống dòng
+            dgvCongViec.DefaultCellStyle.WrapMode = DataGridViewTriState.True;
+            dgvCongViec.AutoSizeRowsMode = DataGridViewAutoSizeRowsMode.AllCells;
+            
             // Lấy UserId đầu tiên nếu không được truyền vào
             if (_userId == 0)
             {
@@ -68,7 +72,7 @@ namespace QuanLyCongViec
                         newRow["TenCongViec"] = row["Title"];
                         newRow["TrangThai"] = ConvertStatus(row["Status"].ToString());
                         newRow["NguoiPhuTrach"] = row["UserFullName"];
-                        newRow["NgayBatDau"] = row["CreatedDate"];
+                        newRow["NgayBatDau"] = row["StartDate"];  // ✅ Sử dụng StartDate thay vì CreatedDate
                         newRow["NgayKetThuc"] = row["DueDate"];
                         newRow["DoUuTien"] = ConvertPriority(row["Priority"].ToString());
                         newRow["Category"] = row["Category"];
@@ -139,23 +143,33 @@ namespace QuanLyCongViec
 
         private string ConvertStatusToEnglish(string status)
         {
-            switch (status)
+            // Trim và chuyển về lowercase để so sánh
+            string normalized = status?.Trim().ToLower();
+            switch (normalized)
             {
-                case "Chưa bắt đầu": return "Todo";
-                case "Đang thực hiện": return "Doing";
-                case "Hoàn thành": return "Done";
-                default: return status;
+                case "chưa bắt đầu": return "Todo";
+                case "đang thực hiện": return "Doing";
+                case "hoàn thành": return "Done";
+                case "todo": return "Todo";
+                case "doing": return "Doing";
+                case "done": return "Done";
+                default: return "Todo"; // Mặc định nếu không hợp lệ
             }
         }
 
         private string ConvertPriorityToEnglish(string priority)
         {
-            switch (priority)
+            // Trim và chuyển về lowercase để so sánh
+            string normalized = priority?.Trim().ToLower();
+            switch (normalized)
             {
-                case "Cao": return "High";
-                case "Trung bình": return "Medium";
-                case "Thấp": return "Low";
-                default: return priority;
+                case "cao": return "High";
+                case "trung bình": return "Medium";
+                case "thấp": return "Low";
+                case "high": return "High";
+                case "medium": return "Medium";
+                case "low": return "Low";
+                default: return "Medium"; // Mặc định nếu không hợp lệ
             }
         }
 
@@ -180,6 +194,14 @@ namespace QuanLyCongViec
                     Direction = ParameterDirection.Output 
                 };
 
+                // Kiểm tra StartDate <= DueDate
+                if (dtpNgayBatDau.Value > dtpNgayKetThuc.Value)
+                {
+                    MessageBox.Show("Ngày bắt đầu phải nhỏ hơn hoặc bằng ngày kết thúc!", "Thông báo", 
+                        MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    return;
+                }
+
                 SqlParameter[] parameters = 
                 {
                     new SqlParameter("@Title", txtTenCongViec.Text.Trim()),
@@ -188,6 +210,7 @@ namespace QuanLyCongViec
                     new SqlParameter("@Priority", priority),
                     new SqlParameter("@Status", status),
                     new SqlParameter("@Category", category),
+                    new SqlParameter("@StartDate", dtpNgayBatDau.Value),  // ✅ Thêm StartDate
                     new SqlParameter("@DueDate", dtpNgayKetThuc.Value),
                     taskIdParam
                 };
@@ -233,6 +256,14 @@ namespace QuanLyCongViec
                 string category = "Work"; // Mặc định
                 string description = "";
 
+                // Kiểm tra StartDate <= DueDate
+                if (dtpNgayBatDau.Value > dtpNgayKetThuc.Value)
+                {
+                    MessageBox.Show("Ngày bắt đầu phải nhỏ hơn hoặc bằng ngày kết thúc!", "Thông báo", 
+                        MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    return;
+                }
+
                 SqlParameter[] parameters = 
                 {
                     new SqlParameter("@TaskId", _selectedTaskId),
@@ -242,6 +273,7 @@ namespace QuanLyCongViec
                     new SqlParameter("@Priority", priority),
                     new SqlParameter("@Status", status),
                     new SqlParameter("@Category", category),
+                    new SqlParameter("@StartDate", dtpNgayBatDau.Value),  // ✅ Thêm StartDate
                     new SqlParameter("@DueDate", dtpNgayKetThuc.Value)
                 };
 
