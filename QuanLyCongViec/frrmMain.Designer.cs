@@ -32,6 +32,8 @@ namespace QuanLyCongViec
             this.lbl_Todo = new System.Windows.Forms.Label();
             this.btn_LichSu = new System.Windows.Forms.Button();
             this.groupBox3 = new System.Windows.Forms.GroupBox();
+            this.btn_ThoiKhoaBieu = new System.Windows.Forms.Button();
+            this.btn_ChiTietTask = new System.Windows.Forms.Button();
             this.btn_ThongBao = new System.Windows.Forms.Button();
             this.btn_QuanLyCongViec = new System.Windows.Forms.Button();
             this.btn_BaoCao = new System.Windows.Forms.Button();
@@ -73,7 +75,7 @@ namespace QuanLyCongViec
             this.btn_DangXuat.Name = "btn_DangXuat";
             this.btn_DangXuat.Size = new System.Drawing.Size(130, 30);
             this.btn_DangXuat.TabIndex = 1;
-            this.btn_DangXuat.Text = " Tài khoản ▼";
+            this.btn_DangXuat.Text = "👤 Tài khoản ▼";
             this.btn_DangXuat.UseVisualStyleBackColor = false;
             this.btn_DangXuat.Click += new System.EventHandler(this.btn_DangXuat_Click);
             // 
@@ -163,11 +165,11 @@ namespace QuanLyCongViec
             this.btn_LichSu.Cursor = System.Windows.Forms.Cursors.Hand;
             this.btn_LichSu.FlatAppearance.BorderSize = 0;
             this.btn_LichSu.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btn_LichSu.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
+            this.btn_LichSu.Font = new System.Drawing.Font("Segoe UI", 9.5F, System.Drawing.FontStyle.Bold);
             this.btn_LichSu.ForeColor = System.Drawing.Color.White;
-            this.btn_LichSu.Location = new System.Drawing.Point(13, 90);
+            this.btn_LichSu.Location = new System.Drawing.Point(323, 25);
             this.btn_LichSu.Name = "btn_LichSu";
-            this.btn_LichSu.Size = new System.Drawing.Size(220, 60);
+            this.btn_LichSu.Size = new System.Drawing.Size(145, 60);
             this.btn_LichSu.TabIndex = 4;
             this.btn_LichSu.Text = "📜 Lịch Sử";
             this.btn_LichSu.UseVisualStyleBackColor = false;
@@ -176,6 +178,8 @@ namespace QuanLyCongViec
             // groupBox3
             // 
             this.groupBox3.BackColor = System.Drawing.Color.White;
+            this.groupBox3.Controls.Add(this.btn_ThoiKhoaBieu);
+            this.groupBox3.Controls.Add(this.btn_ChiTietTask);
             this.groupBox3.Controls.Add(this.btn_ThongBao);
             this.groupBox3.Controls.Add(this.btn_QuanLyCongViec);
             this.groupBox3.Controls.Add(this.btn_BaoCao);
@@ -183,10 +187,42 @@ namespace QuanLyCongViec
             this.groupBox3.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold);
             this.groupBox3.Location = new System.Drawing.Point(12, 338);
             this.groupBox3.Name = "groupBox3";
-            this.groupBox3.Size = new System.Drawing.Size(480, 160);
+            this.groupBox3.Size = new System.Drawing.Size(480, 165);
             this.groupBox3.TabIndex = 6;
             this.groupBox3.TabStop = false;
             this.groupBox3.Text = "Chức năng";
+            // 
+            // btn_ThoiKhoaBieu
+            // 
+            this.btn_ThoiKhoaBieu.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(41)))), ((int)(((byte)(128)))), ((int)(((byte)(185)))));
+            this.btn_ThoiKhoaBieu.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.btn_ThoiKhoaBieu.FlatAppearance.BorderSize = 0;
+            this.btn_ThoiKhoaBieu.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btn_ThoiKhoaBieu.Font = new System.Drawing.Font("Segoe UI", 9.5F, System.Drawing.FontStyle.Bold);
+            this.btn_ThoiKhoaBieu.ForeColor = System.Drawing.Color.White;
+            this.btn_ThoiKhoaBieu.Location = new System.Drawing.Point(168, 95);
+            this.btn_ThoiKhoaBieu.Name = "btn_ThoiKhoaBieu";
+            this.btn_ThoiKhoaBieu.Size = new System.Drawing.Size(145, 60);
+            this.btn_ThoiKhoaBieu.TabIndex = 6;
+            this.btn_ThoiKhoaBieu.Text = "📅 Thời Khóa\r\nBiểu";
+            this.btn_ThoiKhoaBieu.UseVisualStyleBackColor = false;
+            this.btn_ThoiKhoaBieu.Click += new System.EventHandler(this.btn_ThoiKhoaBieu_Click);
+            // 
+            // btn_ChiTietTask
+            // 
+            this.btn_ChiTietTask.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(241)))), ((int)(((byte)(196)))), ((int)(((byte)(15)))));
+            this.btn_ChiTietTask.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.btn_ChiTietTask.FlatAppearance.BorderSize = 0;
+            this.btn_ChiTietTask.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btn_ChiTietTask.Font = new System.Drawing.Font("Segoe UI", 9.5F, System.Drawing.FontStyle.Bold);
+            this.btn_ChiTietTask.ForeColor = System.Drawing.Color.White;
+            this.btn_ChiTietTask.Location = new System.Drawing.Point(323, 95);
+            this.btn_ChiTietTask.Name = "btn_ChiTietTask";
+            this.btn_ChiTietTask.Size = new System.Drawing.Size(145, 60);
+            this.btn_ChiTietTask.TabIndex = 7;
+            this.btn_ChiTietTask.Text = "📝 Chi Tiết\r\nTask";
+            this.btn_ChiTietTask.UseVisualStyleBackColor = false;
+            this.btn_ChiTietTask.Click += new System.EventHandler(this.btn_ChiTietTask_Click);
             // 
             // btn_ThongBao
             // 
@@ -194,13 +230,13 @@ namespace QuanLyCongViec
             this.btn_ThongBao.Cursor = System.Windows.Forms.Cursors.Hand;
             this.btn_ThongBao.FlatAppearance.BorderSize = 0;
             this.btn_ThongBao.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btn_ThongBao.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
+            this.btn_ThongBao.Font = new System.Drawing.Font("Segoe UI", 9.5F, System.Drawing.FontStyle.Bold);
             this.btn_ThongBao.ForeColor = System.Drawing.Color.White;
-            this.btn_ThongBao.Location = new System.Drawing.Point(247, 90);
+            this.btn_ThongBao.Location = new System.Drawing.Point(13, 95);
             this.btn_ThongBao.Name = "btn_ThongBao";
-            this.btn_ThongBao.Size = new System.Drawing.Size(220, 60);
+            this.btn_ThongBao.Size = new System.Drawing.Size(145, 60);
             this.btn_ThongBao.TabIndex = 5;
-            this.btn_ThongBao.Text = "Thông Báo";
+            this.btn_ThongBao.Text = "🔔 Thông Báo";
             this.btn_ThongBao.UseVisualStyleBackColor = true;
             this.btn_ThongBao.Click += new System.EventHandler(this.btn_ThongBao_Click);
             // 
@@ -210,13 +246,13 @@ namespace QuanLyCongViec
             this.btn_QuanLyCongViec.Cursor = System.Windows.Forms.Cursors.Hand;
             this.btn_QuanLyCongViec.FlatAppearance.BorderSize = 0;
             this.btn_QuanLyCongViec.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btn_QuanLyCongViec.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
+            this.btn_QuanLyCongViec.Font = new System.Drawing.Font("Segoe UI", 9.5F, System.Drawing.FontStyle.Bold);
             this.btn_QuanLyCongViec.ForeColor = System.Drawing.Color.White;
-            this.btn_QuanLyCongViec.Location = new System.Drawing.Point(13, 21);
+            this.btn_QuanLyCongViec.Location = new System.Drawing.Point(13, 25);
             this.btn_QuanLyCongViec.Name = "btn_QuanLyCongViec";
-            this.btn_QuanLyCongViec.Size = new System.Drawing.Size(220, 60);
+            this.btn_QuanLyCongViec.Size = new System.Drawing.Size(145, 60);
             this.btn_QuanLyCongViec.TabIndex = 4;
-            this.btn_QuanLyCongViec.Text = "📋 Quản lý công việc";
+            this.btn_QuanLyCongViec.Text = "📋 Quản lý\r\ncông việc";
             this.btn_QuanLyCongViec.UseVisualStyleBackColor = false;
             this.btn_QuanLyCongViec.Click += new System.EventHandler(this.btn_QuanLyCongViec_Click);
             // 
@@ -226,11 +262,11 @@ namespace QuanLyCongViec
             this.btn_BaoCao.Cursor = System.Windows.Forms.Cursors.Hand;
             this.btn_BaoCao.FlatAppearance.BorderSize = 0;
             this.btn_BaoCao.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btn_BaoCao.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
+            this.btn_BaoCao.Font = new System.Drawing.Font("Segoe UI", 9.5F, System.Drawing.FontStyle.Bold);
             this.btn_BaoCao.ForeColor = System.Drawing.Color.White;
-            this.btn_BaoCao.Location = new System.Drawing.Point(247, 21);
+            this.btn_BaoCao.Location = new System.Drawing.Point(168, 25);
             this.btn_BaoCao.Name = "btn_BaoCao";
-            this.btn_BaoCao.Size = new System.Drawing.Size(220, 60);
+            this.btn_BaoCao.Size = new System.Drawing.Size(145, 60);
             this.btn_BaoCao.TabIndex = 4;
             this.btn_BaoCao.Text = "📊 Báo Cáo";
             this.btn_BaoCao.UseVisualStyleBackColor = false;
@@ -255,6 +291,15 @@ namespace QuanLyCongViec
             this.panel_Tong.Name = "panel_Tong";
             this.panel_Tong.Size = new System.Drawing.Size(236, 51);
             this.panel_Tong.TabIndex = 7;
+            // 
+            // panel_Todo
+            // 
+            this.panel_Todo.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.panel_Todo.Controls.Add(this.lbl_Todo);
+            this.panel_Todo.Location = new System.Drawing.Point(256, 107);
+            this.panel_Todo.Name = "panel_Todo";
+            this.panel_Todo.Size = new System.Drawing.Size(236, 51);
+            this.panel_Todo.TabIndex = 11;
             // 
             // panel_Doing
             // 
@@ -284,21 +329,12 @@ namespace QuanLyCongViec
             this.panel_QuaHan.Size = new System.Drawing.Size(480, 54);
             this.panel_QuaHan.TabIndex = 10;
             // 
-            // panel_Todo
-            // 
-            this.panel_Todo.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.panel_Todo.Controls.Add(this.lbl_Todo);
-            this.panel_Todo.Location = new System.Drawing.Point(256, 107);
-            this.panel_Todo.Name = "panel_Todo";
-            this.panel_Todo.Size = new System.Drawing.Size(236, 51);
-            this.panel_Todo.TabIndex = 11;
-            // 
             // frrmMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(236)))), ((int)(((byte)(240)))), ((int)(((byte)(241)))));
-            this.ClientSize = new System.Drawing.Size(504, 510);
+            this.ClientSize = new System.Drawing.Size(504, 515);
             this.Controls.Add(this.panel_Todo);
             this.Controls.Add(this.panel_QuaHan);
             this.Controls.Add(this.panel_Done);
@@ -348,5 +384,7 @@ namespace QuanLyCongViec
         private System.Windows.Forms.Panel panel_Done;
         private System.Windows.Forms.Panel panel_QuaHan;
         private System.Windows.Forms.Panel panel_Todo;
+        private System.Windows.Forms.Button btn_ThoiKhoaBieu;
+        private System.Windows.Forms.Button btn_ChiTietTask;
     }
 }

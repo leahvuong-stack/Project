@@ -1,4 +1,4 @@
-﻿using QuanLyCongViec.DataAccess;
+using QuanLyCongViec.DataAccess;
 using QuanLyCongViec.Helpers;
 using QuanLyCongViec.Controls;
 using System;
@@ -239,11 +239,11 @@ namespace QuanLyCongViec
                 {
                     // Đổ dữ liệu vào label Dashboard
                     DataRow row = dt.Rows[0];
-                    lbl_TongCongViec.Text = $"Tổng công việc: {row["TotalTasks"]}";
-                    lbl_Todo.Text = $"Cần làm (To-do): {row["TodoCount"]}";
-                    lbl_Doing.Text = $"Đang làm (Doing): {row["DoingCount"]}";
-                    lbl_Done.Text = $"Hoàn thành (Done): {row["DoneCount"]}";
-                    lbl_quahan.Text = $"Quá hạn: {row["OverdueCount"]}";
+                    lbl_TongCongViec.Text = $"📊 Tổng công việc: {row["TotalTasks"]}";
+                    lbl_Todo.Text = $"📝 Cần làm (To-do): {row["TodoCount"]}";
+                    lbl_Doing.Text = $"⚡ Đang làm (Doing): {row["DoingCount"]}";
+                    lbl_Done.Text = $"✅ Hoàn thành (Done): {row["DoneCount"]}";
+                    lbl_quahan.Text = $"⚠️ Quá hạn: {row["OverdueCount"]}";
                 }
             }
             catch (Exception ex)
@@ -303,6 +303,20 @@ namespace QuanLyCongViec
         {
             frmHuongDan huongDanForm = new frmHuongDan();
             huongDanForm.ShowDialog();
+        }
+
+        // Mở form Thời khóa biểu
+        private void btn_ThoiKhoaBieu_Click(object sender, EventArgs e)
+        {
+            frmThoiKhoaBieu thoiKhoaBieuForm = new frmThoiKhoaBieu(_currentUserId);
+            thoiKhoaBieuForm.ShowDialog();
+        }
+
+        // Mở form Chi tiết Task
+        private void btn_ChiTietTask_Click(object sender, EventArgs e)
+        {
+            frmChiTietTask chiTietTaskForm = new frmChiTietTask();
+            chiTietTaskForm.ShowDialog();
         }
 
         // Xử lý đăng xuất
