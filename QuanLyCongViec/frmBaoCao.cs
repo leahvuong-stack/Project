@@ -14,8 +14,14 @@ namespace QuanLyCongViec
         public frmBaoCao(int userId = 0)
         {
             InitializeComponent();
+            // Tắt AutoScale để tránh font bị nhỏ do DPI cao
+            this.AutoScaleMode = AutoScaleMode.None;
+
             _userId = userId;
             CapNhatThongKe();
+
+            // Đăng ký sự kiện resize
+            this.Resize += frmBaoCao_Resize;
         }
 
         private void CapNhatThongKe()
@@ -187,6 +193,41 @@ namespace QuanLyCongViec
             }
         }
 
+        /// Xử lý sự kiện khi người dùng click vào link GitHub trên form báo cáo
+        private void linkLabel1_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        {
+            string url = "https://github.com/TDMHorizon/Project";
+            try
+            {
+                System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo(url) { UseShellExecute = true });
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Không thể mở link GitHub:\n{ex.Message}", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        // Căn giữa tiêu đề và Link Github: URL
+        private void CanGiuaTieuDeVaLink()
+        {
+            if (label2 == null || label10 == null || linkLabel1 == null) return;
+
+            // Căn giữa tiêu đề
+            label2.Left = Math.Max(0, (this.ClientSize.Width - label2.Width) / 2);
+
+            // Căn giữa cụm "Link Github: URL"
+            int totalWidth = label10.Width + linkLabel1.Width + 5; // +5 là khoảng cách giữa 2 control
+            int startX = Math.Max(0, (this.ClientSize.Width - totalWidth) / 2);
+            label10.Left = startX;
+            linkLabel1.Left = startX + label10.Width + 5;
+        }
+
+        private void frmBaoCao_Resize(object sender, EventArgs e)
+        {
+            CanGiuaTieuDeVaLink(); // Gọi căn giữa khi resize
+        }
+
+
         private void btnHome_Click(object sender, EventArgs e)
         {
             this.Close();
@@ -194,6 +235,7 @@ namespace QuanLyCongViec
 
         private void frmBaoCao_Load(object sender, EventArgs e)
         {
+            CanGiuaTieuDeVaLink(); // Gọi căn giữa khi form load
         }
 
         private void label1_Click(object sender, EventArgs e)

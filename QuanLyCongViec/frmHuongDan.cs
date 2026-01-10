@@ -10,20 +10,27 @@ namespace QuanLyCongViec
         {
             InitializeComponent();
             LoadMenuItems();
-            ShowContent("Cập nhật Tiến độ Task"); // Mở mặc định trang quan trọng nhất
+            // Mở mặc định trang quan trọng nhất để người dùng nắm bắt quy trình ngay
+            ShowContent("Cập nhật Tiến độ Task");
         }
 
         private void LoadMenuItems()
         {
-            // Danh sách Menu (Sắp xếp theo thứ tự hiển thị từ trên xuống)
+            // Danh sách các mục hướng dẫn
             string[] menuItems = {
+                "Đăng nhập Hệ thống",
+                "Quên mật khẩu",
+                "Thông tin cá nhân",
+                "Báo cáo",
+                "Lịch sử Hoạt động",
+                "Quản lý Công việc",
+                "Quản lý Thông báo",
+                "Chi tiết Task Chuyên sâu",
                 "Mẹo & Thủ thuật",
-                "Nhập liệu Công việc",
-                "Nhật ký Lịch thay đổi",
-                "Cập nhật Tiến độ Task",
-                "Chi tiết Công việc",
-                "Quản lý Thông báo"
+                "Cập nhật Tiến độ Task"
             };
+
+            Array.Reverse(menuItems);
 
             foreach (string item in menuItems)
             {
@@ -37,6 +44,7 @@ namespace QuanLyCongViec
                 btn.FlatAppearance.BorderSize = 0;
                 btn.BackColor = Color.FromArgb(245, 245, 245);
                 btn.Font = new Font("Segoe UI", 10, FontStyle.Regular);
+                btn.Cursor = Cursors.Hand;
 
                 btn.Click += (s, e) => {
                     ShowContent(item);
@@ -49,91 +57,125 @@ namespace QuanLyCongViec
         private void HighlightButton(Button clickedBtn)
         {
             foreach (Control ctrl in pnlSidebar.Controls)
-                if (ctrl is Button btn) { btn.BackColor = Color.FromArgb(245, 245, 245); btn.ForeColor = Color.Black; }
-
-            clickedBtn.BackColor = Color.FromArgb(0, 120, 215); // Màu xanh dương đậm
+            {
+                if (ctrl is Button btn)
+                {
+                    btn.BackColor = Color.FromArgb(245, 245, 245);
+                    btn.ForeColor = Color.Black;
+                }
+            }
+            clickedBtn.BackColor = Color.FromArgb(0, 120, 215);
             clickedBtn.ForeColor = Color.White;
         }
 
         private void ShowContent(string menuItem)
         {
             pnlContent.Controls.Clear();
-            pnlContent.Padding = new Padding(40); // Tạo không gian thoáng cho văn bản
+            pnlContent.Padding = new Padding(40);
 
             switch (menuItem)
             {
-                case "Quản lý Thông báo":
-                    ShowGenericContent("HỆ THỐNG QUẢN LÝ THÔNG BÁO",
-                        "Đây là điểm khởi đầu của quy trình. Mọi thay đổi về Task đều được gửi về đây để bạn kịp thời xử lý.",
-                        "• Theo dõi danh sách: Các thông báo mới sẽ xuất hiện ở đầu danh sách với biểu tượng chuông.\n" +
-                        "• Tương tác nhanh: Nhấp vào thông báo để hệ thống tự động mở mục 'Chi tiết Công việc' tương ứng.\n" +
-                        "• Phân loại ưu tiên: Các thông báo màu đỏ yêu cầu xử lý ngay vì sắp hết hạn (Deadline).\n" +
-                        "• Dọn dẹp: Đánh dấu 'Đã đọc' để ẩn các thông báo cũ, giúp tập trung vào công việc hiện tại.");
+                case "Đăng nhập Hệ thống":
+                    ShowGenericContent("HƯỚNG DẪN TRUY CẬP & BẢO MẬT TÀI KHOẢN",
+                        "Xác thực danh tính là bước đầu tiên để hệ thống phân quyền chính xác các đầu việc cho từng cá nhân.",
+                        "• QUY TRÌNH ĐĂNG NHẬP: Nhập 'Tên đăng nhập' và 'Mật khẩu' được cấp (ví dụ: 'user1').\n\n" +
+                        "• CHẾ ĐỘ GHI NHỚ: Sử dụng tính năng 'Ghi nhớ đăng nhập' trên máy tính cá nhân để hệ thống tự điền thông tin cho những lần sau.\n\n" +
+                        "• AN TOÀN BẢO MẬT: Sau khi làm việc xong trên máy tính chung, hãy đăng xuất để bảo vệ dữ liệu cá nhân.");
                     break;
 
-                case "Chi tiết Công việc":
-                    ShowGenericContent("HƯỚNG DẪN XEM CHI TIẾT TASK",
-                        "Màn hình này cung cấp toàn bộ hồ sơ nghiệp vụ để bạn thực hiện công việc chính xác nhất.",
-                        "• Tiếp nhận hồ sơ: Xem mô tả mục tiêu, yêu cầu kỹ thuật và các tài liệu đính kèm (PDF, Hình ảnh).\n" +
-                        "• Danh sách công việc con (Checklist): Hoàn thành từng hạng mục nhỏ để đạt được mục tiêu lớn.\n" +
-                        "• Nhân sự liên quan: Biết rõ ai là người giao việc (Owner) và ai là người hỗ trợ (Collaborator).\n" +
-                        "• Phối hợp: Sử dụng khung thảo luận để gửi báo cáo nhanh hoặc hỏi đáp về các vướng mắc tại chỗ.");
+                case "Quên mật khẩu":
+                    ShowGenericContent("KHÔI PHỤC TRUY CẬP (frmQuenMatKhau)",
+                        "Hệ thống hỗ trợ lấy lại quyền truy cập trong trường hợp bạn không nhớ thông tin đăng nhập.",
+                        "• XÁC THỰC EMAIL: Nhập địa chỉ Email đã đăng ký. Mã xác nhận (OTP) sẽ được gửi về hộp thư này.\n\n" +
+                        "• THIẾT LẬP MỚI: Sau khi nhập đúng OTP, hệ thống cho phép bạn tạo mật khẩu mới.\n\n" +
+                        "• TRỢ GIÚP: Nếu không nhận được Email, vui lòng kiểm tra hộp thư rác hoặc liên hệ quản trị viên.");
+                    break;
+
+                case "Thông tin cá nhân":
+                    ShowGenericContent("QUẢN LÝ HỒ SƠ CÁ NHÂN (frmProfile)",
+                        "Nơi cập nhật thông tin nhận diện và các tùy chỉnh cá nhân hóa tài khoản.",
+                        "• CẬP NHẬT ẢNH: Giúp đồng nghiệp dễ dàng nhận diện bạn trên danh sách phụ trách.\n\n" +
+                        "• THÔNG TIN LIÊN HỆ: Cập nhật Số điện thoại và Email để nhận thông báo khẩn cấp.\n\n" +
+                        "• ĐỔI MẬT KHẨU: Bạn nên chủ động thay đổi mật khẩu định kỳ để tăng tính bảo mật.");
+                    break;
+
+                case "Lịch sử Hoạt động":
+                    ShowGenericContent("TRUY XUẤT NHẬT KÝ & MINH BẠCH DỮ LIỆU",
+                        "Tính năng giúp người quản lý và nhân viên theo dõi toàn bộ các thay đổi phát sinh.",
+                        "• TÌM KIẾM: Lọc theo 'Người thao tác' hoặc 'Mã lịch sử' để truy vết sự kiện.\n\n" +
+                        "• HÀNH ĐỘNG: Bảng hiển thị rõ các hành vi Thêm - Sửa - Xóa, giúp kiểm soát sai sót.\n\n" +
+                        "• ĐỒNG BỘ: Nhấn 'Load Danh Sách' để cập nhật tương tác mới nhất từ các thành viên khác.");
+                    break;
+
+                case "Quản lý Công việc":
+                    ShowGenericContent("QUY TRÌNH QUẢN TRỊ TASK TẬP TRUNG",
+                        "Giao diện điều hành chính - nơi khởi tạo, phân bổ nhân sự và thiết lập thời hạn.",
+                        "• KHỞI TẠO: Nhập Mã công việc và mô tả. Chọn 'Người phụ trách' để Task xuất hiện trên màn hình của họ.\n\n" +
+                        "• DEADLINE: Chọn ngày bắt đầu/kết thúc. Hệ thống sẽ cảnh báo nếu công việc bị đình trệ.\n\n" +
+                        "• THAO TÁC: Sử dụng các nút Thêm/Sửa/Xóa sau khi chọn dòng tương ứng trên bảng.");
+                    break;
+
+                case "Chi tiết Task Chuyên sâu":
+                    ShowGenericContent("HIỆU CHỈNH CHI TIẾT & BÁO CÁO NGHIỆP VỤ",
+                        "Dành cho nhân viên báo cáo cụ thể về kết quả thực hiện và các vướng mắc.",
+                        "• ƯU TIÊN: Thiết lập mức Thấp - Trung bình - Cao để ưu tiên xử lý việc khẩn cấp.\n\n" +
+                        "• GHI CHÚ: Lưu lại các kết quả bàn giao hoặc giải trình lý do chậm tiến độ.\n\n" +
+                        "• LƯU TRỮ: Nhấn 'Lưu lại' để hệ thống ghi nhận thay đổi vào lịch sử.");
+                    break;
+
+                case "Báo cáo":
+                    ShowGenericContent("PHÂN TÍCH HIỆU SUẤT & THỐNG KÊ QUẢN TRỊ",
+                        "Chuyển đổi dữ liệu thô thành thông tin quản trị quý giá để đánh giá năng lực.",
+                        "• DASHBOARD: Theo dõi nhanh: Tổng việc, việc đang làm và việc đã quá hạn.\n\n" +
+                        "• XỬ LÝ RỦI RO: Lọc danh sách 'Quá hạn' để ưu tiên nguồn lực xử lý gấp.\n\n" +
+                        "• ĐÁNH GIÁ: Cơ sở để người quản lý khen thưởng hoặc đôn đốc nhân sự.");
+                    break;
+
+                case "Quản lý Thông báo":
+                    ShowGenericContent("TRUNG TÂM TƯƠNG TÁC & NHẮC VIỆC",
+                        "Đảm bảo dòng chảy thông tin thông suốt mà không cần kiểm tra thủ công.",
+                        "• ĐIỀU HƯỚNG: Nhấp đúp vào thông báo để mở ngay màn hình Chi tiết Task tương ứng.\n\n" +
+                        "• CẢNH BÁO: Hệ thống tự nhắc khi sắp đến deadline hoặc có thay đổi từ quản lý.\n\n" +
+                        "• ĐÁNH DẤU HOÀN THÀNH: Khi hoàn thành công việc, nhấn nút hoàn thành, hệ thống sẽ cập nhật trạng thái hiển thị hoàn tất.");
                     break;
 
                 case "Cập nhật Tiến độ Task":
-                    ShowProgressContent(); // Hàm xử lý riêng cho phần có TrackBar
-                    break;
-
-                case "Nhật ký Lịch thay đổi":
-                    ShowGenericContent("TRUY XUẤT NHẬT KÝ VẬN HÀNH",
-                        "Hệ thống lưu trữ mọi dấu vết chỉnh sửa để đảm bảo tính minh bạch và phục vụ công tác đối soát.",
-                        "• Lịch sử thay đổi: Xem lại bạn đã cập nhật tiến độ vào những khung giờ nào.\n" +
-                        "• Truy vết người dùng: Hệ thống ghi nhận chính xác ID người đã thay đổi nội dung hoặc thời hạn Task.\n" +
-                        "• Đối chiếu dữ liệu: Khi có sai lệch, nhật ký là bằng chứng để xác định nguyên nhân và thời điểm phát sinh.\n" +
-                        "• Báo cáo: Hỗ trợ trích xuất lịch sử làm việc để làm căn cứ đánh giá hiệu quả cuối tháng.");
-                    break;
-
-                case "Nhập liệu Công việc":
-                    ShowGenericContent("QUY TRÌNH KHỞI TẠO TASK MỚI",
-                        "Hướng dẫn dành cho cấp quản lý để đưa công việc mới vào hệ thống quản lý tập trung.",
-                        "• Bước 1: Nhập tiêu đề rõ ràng và đính kèm tài liệu hướng dẫn vận hành từ mục 'Chi tiết Task'.\n" +
-                        "• Bước 2: Thiết lập thời hạn (Deadline) để hệ thống tự động đẩy thông báo nhắc nhở.\n" +
-                        "• Bước 3: Phân quyền cho đúng nhân sự chịu trách nhiệm chính để tránh chồng chéo công việc.\n" +
-                        "• Bước 4: Kiểm tra lại trạng thái ban đầu trước khi bấm 'Phát hành' thông báo tới nhân viên.");
+                    ShowProgressContent();
                     break;
 
                 case "Mẹo & Thủ thuật":
-                    ShowGenericContent("MẸO TỐI ƯU HÓA THAO TÁC",
-                        "Sử dụng các phím tắt và thao tác thông minh giúp bạn làm việc nhanh hơn 30%.",
-                        "• Phím tắt F5: Làm mới (Refresh) toàn bộ danh sách để cập nhật thông báo mới nhất ngay lập tức.\n" +
-                        "• Kéo thả tài liệu: Bạn có thể kéo file từ máy tính vào khung Chi tiết Task để đính kèm cực nhanh.\n" +
-                        "• Chuột phải: Sử dụng menu chuột phải để thay đổi trạng thái Task mà không cần mở sâu bên trong.\n" +
-                        "• Chế độ lọc: Sử dụng từ khóa hoặc màu sắc để tìm nhanh các công việc đang bị chậm tiến độ.");
+                    ShowGenericContent("TỐI ƯU HÓA TRẢI NGHIỆM NGƯỜI DÙNG",
+
+                        "Sử dụng các quy tắc ngầm định để làm việc chuyên nghiệp hơn.",
+
+                        "• Màu sắc: Màu Đỏ tượng trưng cho 'Quá hạn', Xanh dương là 'Cần làm', Vàng là 'Đang làm' và Xanh lá là 'Hoàn thành'.\n" +
+
+                        "• Đồng bộ: Luôn nhấn các nút 'Load' hoặc 'Hiển thị' để đảm bảo bạn đang xem dữ liệu mới nhất từ máy chủ.");
+
                     break;
+
             }
+
         }
+
+
 
         private void ShowGenericContent(string title, string desc, string bullets)
         {
             AddLabel(title, new Font("Segoe UI", 18, FontStyle.Bold), Color.FromArgb(30, 60, 100), 10);
-
             Panel line = new Panel { Height = 2, BackColor = Color.FromArgb(30, 60, 100), Dock = DockStyle.Top };
             pnlContent.Controls.Add(line);
-
             AddLabel(desc, new Font("Segoe UI", 11, FontStyle.Italic), Color.FromArgb(50, 50, 50), 25);
             AddLabel(bullets, new Font("Segoe UI", 11), Color.FromArgb(30, 30, 30), 0);
         }
 
         private void ShowProgressContent()
         {
-            AddLabel("CẬP NHẬT TIẾN ĐỘ & TRẠNG THÁI CÔNG VIỆC", new Font("Segoe UI", 18, FontStyle.Bold), Color.FromArgb(30, 60, 100), 5);
-
+            AddLabel("HƯỚNG DẪN CẬP NHẬT TIẾN ĐỘ CÔNG VIỆC", new Font("Segoe UI", 18, FontStyle.Bold), Color.FromArgb(30, 60, 100), 5);
             Panel line = new Panel { Height = 2, BackColor = Color.FromArgb(30, 60, 100), Dock = DockStyle.Top };
             pnlContent.Controls.Add(line);
+            AddLabel("Việc cập nhật tiến độ thường xuyên giúp hệ thống tính toán chính xác tình trạng dự án.", new Font("Segoe UI", 11), Color.Black, 25);
 
-            AddLabel("Sau khi tiếp nhận Task từ Thông báo và xem Chi tiết, hãy kéo thanh trượt dưới đây để cập nhật kết quả thực hiện của bạn.", new Font("Segoe UI", 11), Color.Black, 25);
-
-            // --- Panel chứa TrackBar biến thiên ---
             Panel progPanel = new Panel { Dock = DockStyle.Top, Height = 140, BorderStyle = BorderStyle.FixedSingle, BackColor = Color.White, Margin = new Padding(0, 0, 0, 30) };
             pnlContent.Controls.Add(progPanel);
 
@@ -146,7 +188,6 @@ namespace QuanLyCongViec
             TrackBar track = new TrackBar { Location = new Point(30, 80), Size = new Size(550, 45), Minimum = 0, Maximum = 100, Value = 75, TickFrequency = 10 };
             progPanel.Controls.Add(track);
 
-            // Xử lý sự kiện kéo thanh trượt thay đổi nội dung trực tiếp
             track.ValueChanged += (s, e) => {
                 int v = track.Value;
                 lblPct.Text = v + "%";
@@ -155,33 +196,28 @@ namespace QuanLyCongViec
                 else { lblPct.ForeColor = Color.Green; lblStatus.Text = "Đã hoàn thành"; lblStatus.ForeColor = Color.Green; }
             };
 
+            AddLabel("💡 QUY ĐỊNH VỀ TRẠNG THÁI MÀU SẮC:", new Font("Segoe UI", 10, FontStyle.Bold), Color.Black, 5);
             AddLabel("🔴 Red: Cảnh báo chậm tiến độ (< 40%)", new Font("Segoe UI", 10), Color.Red, 0);
+
+
+
             AddLabel("🟠 Orange: Công việc đang triển khai (40% - 99%)", new Font("Segoe UI", 10), Color.DarkOrange, 0);
+
+
+
             AddLabel("🟢 Green: Hoàn thành mục tiêu (100%)", new Font("Segoe UI", 10), Color.Green, 30);
 
-            // Box ghi chú quan trọng
             Panel warn = new Panel { Dock = DockStyle.Top, BackColor = Color.FromArgb(255, 252, 225), Padding = new Padding(20), BorderStyle = BorderStyle.FixedSingle, Height = 100 };
             pnlContent.Controls.Add(warn);
-
-            Label warnTitle = new Label { Text = "⭐ QUY ĐỊNH HỆ THỐNG:", Font = new Font("Segoe UI", 10, FontStyle.Bold), ForeColor = Color.DarkRed, Dock = DockStyle.Top, AutoSize = true };
+            Label warnTitle = new Label { Text = "⭐ LỜI KHUYÊN QUAN TRỌNG:", Font = new Font("Segoe UI", 10, FontStyle.Bold), ForeColor = Color.DarkRed, Dock = DockStyle.Top, AutoSize = true };
             warn.Controls.Add(warnTitle);
-
-            Label warnText = new Label { Text = "Khi thanh tiến độ đạt 100%, hệ thống sẽ tự động khóa nội dung và gửi thông báo hoàn tất tới người quản lý. Hãy chắc chắn bạn đã đính kèm đủ tài liệu báo cáo tại mục 'Chi tiết Task' trước khi lưu.", Font = new Font("Segoe UI", 10), Dock = DockStyle.Fill, ForeColor = Color.FromArgb(64, 64, 64) };
+            Label warnText = new Label { Text = "Đừng quên nhấn nút 'Lưu lại' sau khi kéo thanh tiến độ. Nếu bạn thoát ra mà không lưu, báo cáo sẽ không được ghi nhận.", Font = new Font("Segoe UI", 10), Dock = DockStyle.Fill, ForeColor = Color.FromArgb(64, 64, 64) };
             warn.Controls.Add(warnText);
         }
 
         private void AddLabel(string text, Font font, Color color, int bottomMargin)
         {
-            Label lbl = new Label
-            {
-                Text = text,
-                Font = font,
-                ForeColor = color,
-                Dock = DockStyle.Top,
-                AutoSize = true,
-                MaximumSize = new Size(700, 0),
-                Padding = new Padding(0, 5, 0, bottomMargin)
-            };
+            Label lbl = new Label { Text = text, Font = font, ForeColor = color, Dock = DockStyle.Top, AutoSize = true, MaximumSize = new Size(700, 0), Padding = new Padding(0, 5, 0, bottomMargin) };
             pnlContent.Controls.Add(lbl);
         }
     }
