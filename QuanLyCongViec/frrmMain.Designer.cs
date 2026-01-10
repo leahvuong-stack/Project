@@ -35,7 +35,6 @@ namespace QuanLyCongViec
             this.btn_ThongBao = new System.Windows.Forms.Button();
             this.btn_QuanLyCongViec = new System.Windows.Forms.Button();
             this.btn_BaoCao = new System.Windows.Forms.Button();
-            this.btn_ThongBao = new System.Windows.Forms.Button();
             this.lbl_TongCongViec = new System.Windows.Forms.Label();
             this.panel_Tong = new System.Windows.Forms.Panel();
             this.panel_Doing = new System.Windows.Forms.Panel();
@@ -70,7 +69,7 @@ namespace QuanLyCongViec
             this.btn_DangXuat.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btn_DangXuat.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold);
             this.btn_DangXuat.ForeColor = System.Drawing.Color.White;
-            this.btn_DangXuat.Location = new System.Drawing.Point(337, 26);
+            this.btn_DangXuat.Location = new System.Drawing.Point(337, 19);
             this.btn_DangXuat.Name = "btn_DangXuat";
             this.btn_DangXuat.Size = new System.Drawing.Size(130, 30);
             this.btn_DangXuat.TabIndex = 1;
@@ -80,9 +79,9 @@ namespace QuanLyCongViec
             // 
             // btn_Help
             // 
-            this.btn_Help.Location = new System.Drawing.Point(324, 46);
+            this.btn_Help.Location = new System.Drawing.Point(337, 55);
             this.btn_Help.Name = "btn_Help";
-            this.btn_Help.Size = new System.Drawing.Size(80, 24);
+            this.btn_Help.Size = new System.Drawing.Size(80, 28);
             this.btn_Help.TabIndex = 5;
             this.btn_Help.Text = "Trợ giúp";
             this.btn_Help.UseVisualStyleBackColor = true;
@@ -201,8 +200,8 @@ namespace QuanLyCongViec
             this.btn_ThongBao.Name = "btn_ThongBao";
             this.btn_ThongBao.Size = new System.Drawing.Size(220, 60);
             this.btn_ThongBao.TabIndex = 5;
-            this.btn_ThongBao.Text = "📅 Thời khóa biểu";
-            this.btn_ThongBao.UseVisualStyleBackColor = false;
+            this.btn_ThongBao.Text = "Thông Báo";
+            this.btn_ThongBao.UseVisualStyleBackColor = true;
             this.btn_ThongBao.Click += new System.EventHandler(this.btn_ThongBao_Click);
             // 
             // btn_QuanLyCongViec
@@ -236,16 +235,6 @@ namespace QuanLyCongViec
             this.btn_BaoCao.Text = "📊 Báo Cáo";
             this.btn_BaoCao.UseVisualStyleBackColor = false;
             this.btn_BaoCao.Click += new System.EventHandler(this.btn_BaoCao_Click);
-            // 
-            // btn_ThongBao
-            // 
-            this.btn_ThongBao.Location = new System.Drawing.Point(13, 105);
-            this.btn_ThongBao.Name = "btn_ThongBao";
-            this.btn_ThongBao.Size = new System.Drawing.Size(126, 74);
-            this.btn_ThongBao.TabIndex = 5;
-            this.btn_ThongBao.Text = "Thông Báo";
-            this.btn_ThongBao.UseVisualStyleBackColor = true;
-            this.btn_ThongBao.Click += new System.EventHandler(this.btn_ThongBao_Click);
             // 
             // lbl_TongCongViec
             // 

@@ -104,9 +104,39 @@ namespace QuanLyCongViec
             {
                 lblSelectedDate.Text = $"📅 {selectedDate:dddd, dd/MM/yyyy}";
 
-                // Sử dụng _userId của user hiện tại
-                DataTable dt = DatabaseHelper.ExecuteStoredProcedure(
-                    "sp_GetTasksByDate",
+                // Query SQL trực tiếp để lấy tasks theo ngày (thay thế stored procedure sp_GetTasksByDate)
+                string query = @"
+                    SELECT Id, Title, Description, Priority, Status, Category, CreatedDate, DueDate,
+                           CompletedDate,
+                           CASE 
+                               WHEN Status = 'Done' THEN N'Hoàn thành'
+                               WHEN CAST(DueDate AS DATE) < CAST(GETDATE() AS DATE) THEN N'Quá hạn'
+                               WHEN CAST(DueDate AS DATE) = CAST(GETDATE() AS DATE) THEN N'Hôm nay'
+                               ELSE N'Sắp tới'
+                           END AS StatusLabel,
+                           CASE Priority
+                               WHEN N'High' THEN '#E74C3C'
+                               WHEN N'Medium' THEN '#F39C12'
+                               WHEN N'Low' THEN '#95A5A6'
+                               ELSE '#BDC3C7'
+                           END AS PriorityColor,
+                           CASE 
+                               WHEN CAST(CreatedDate AS DATE) = @SelectedDate AND CAST(DueDate AS DATE) = @SelectedDate THEN N'📍 Trong ngày'
+                               WHEN CAST(CreatedDate AS DATE) = @SelectedDate THEN N'🚀 Bắt đầu'
+                               WHEN CAST(DueDate AS DATE) = @SelectedDate THEN N'🏁 Kết thúc'
+                               ELSE N'⏳ Đang tiến hành'
+                           END AS DateRangeLabel
+                    FROM Tasks
+                    WHERE UserId = @UserId AND IsDeleted = 0
+                      AND CAST(CreatedDate AS DATE) <= @SelectedDate
+                      AND (
+                          (Status = 'Done' AND CAST(ISNULL(CompletedDate, DueDate) AS DATE) >= @SelectedDate)
+                          OR (Status != 'Done' AND CAST(DueDate AS DATE) >= @SelectedDate)
+                      )
+                    ORDER BY CASE Priority WHEN N'High' THEN 1 WHEN N'Medium' THEN 2 WHEN N'Low' THEN 3 ELSE 4 END, CreatedDate";
+
+                DataTable dt = DatabaseHelper.ExecuteQuery(
+                    query,
                     new System.Data.SqlClient.SqlParameter("@UserId", _userId),
                     new System.Data.SqlClient.SqlParameter("@SelectedDate", selectedDate.Date)
                 );
@@ -121,8 +151,10 @@ namespace QuanLyCongViec
                     dgvTasks.Columns["CompletedDate"].Visible = false;
                     dgvTasks.Columns["PriorityColor"].Visible = false;
                     dgvTasks.Columns["StatusLabel"].Visible = false;
-                    dgvTasks.Columns["DateRangeLabel"].Visible = false; // ✅ Ẩn cột Phạm vi
-                    dgvTasks.Columns["StartDate"].Visible = false; // ✅ Ẩn cột Ngày bắt đầu
+                    dgvTasks.Columns["DateRangeLabel"].Visible = false; // Ẩn cột Phạm vi
+                    // Ẩn cột StartDate nếu tồn tại (cột này không có trong database hiện tại)
+                    if (dgvTasks.Columns["StartDate"] != null)
+                        dgvTasks.Columns["StartDate"].Visible = false;
 
                     dgvTasks.Columns["Title"].HeaderText = "Tiêu đề";
                     dgvTasks.Columns["Priority"].HeaderText = "Ưu tiên";

@@ -84,11 +84,11 @@ namespace QuanLyCongViec
                     break;
 
                 case "Quên mật khẩu":
-                    ShowGenericContent("KHÔI PHỤC TRUY CẬP (frmQuenMatKhau)",
+                    ShowGenericContent("KHÔI PHỤC TRUY CẬP (frmQuenMK)",
                         "Hệ thống hỗ trợ lấy lại quyền truy cập trong trường hợp bạn không nhớ thông tin đăng nhập.",
-                        "• XÁC THỰC EMAIL: Nhập địa chỉ Email đã đăng ký. Mã xác nhận (OTP) sẽ được gửi về hộp thư này.\n\n" +
-                        "• THIẾT LẬP MỚI: Sau khi nhập đúng OTP, hệ thống cho phép bạn tạo mật khẩu mới.\n\n" +
-                        "• TRỢ GIÚP: Nếu không nhận được Email, vui lòng kiểm tra hộp thư rác hoặc liên hệ quản trị viên.");
+                        "• XÁC THỰC DANH TÍNH: Nhập tên đăng nhập hoặc email đã đăng ký trong hệ thống.\n\n" +
+                        "• THIẾT LẬP MẬT KHẨU MỚI: Nhập mật khẩu mới và xác nhận lại mật khẩu. Hệ thống sẽ kiểm tra độ dài và tính hợp lệ của mật khẩu trước khi cập nhật.\n\n" +
+                        "• TRỢ GIÚP: Nếu không tìm thấy tài khoản hoặc gặp lỗi, vui lòng kiểm tra lại thông tin đăng nhập hoặc liên hệ quản trị viên để được hỗ trợ.");
                     break;
 
                 case "Thông tin cá nhân":

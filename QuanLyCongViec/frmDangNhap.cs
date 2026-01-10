@@ -10,6 +10,11 @@ namespace QuanLyCongViec
     //Form đăng nhập vào hệ thống Quản lý Công việc
     public partial class frmDangNhap : Form
     {
+        #region Constants - Hằng số
+        private const int KHONG_CO_LOI = 0;
+        private const int TAI_KHOAN_BI_KHOA = 2;
+        #endregion
+
         #region Private Fields - Các trường dữ liệu riêng tư
         //Số lần đăng nhập thất bại liên tiếp
         private int _soLanDangNhapSai = 0;
@@ -31,19 +36,19 @@ namespace QuanLyCongViec
         //Xử lý sự kiện click nút Đăng nhập
         private void btnXacNhan_Click(object sender, EventArgs e)
         {
-            PerformLogin();
+            ThucHienDangNhap();
         }
         //Xử lý sự kiện click link Đăng ký
         //Mở form đăng ký và xử lý kết quả sau khi đóng
         private void linklblDangKy_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
-            OpenRegistrationForm();
+            MoFormDangKy();
         }
         //Xử lý sự kiện click link Quên mật khẩu
         //Mở form quên mật khẩu
         private void linklblQuenMK_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
-            OpenForgotPasswordForm();
+            MoFormQuenMatKhau();
         }
         //Xử lý sự kiện nhấn phím Enter trong textbox Tài khoản
         //Chuyển focus sang textbox Mật khẩu
@@ -62,7 +67,7 @@ namespace QuanLyCongViec
             if (e.KeyCode == Keys.Enter)
             {
                 e.SuppressKeyPress = true;
-                PerformLogin();
+                ThucHienDangNhap();
             }
         }
         #endregion
@@ -70,7 +75,7 @@ namespace QuanLyCongViec
         #region Private Methods - Các phương thức riêng tư
         //Mở form đăng ký và xử lý kết quả
         //Nếu đăng ký thành công, tự động điền username vào form đăng nhập
-        private void OpenRegistrationForm()
+        private void MoFormDangKy()
         {
             frmDangKy frmDangKy = new frmDangKy();
             this.Hide();
@@ -78,13 +83,13 @@ namespace QuanLyCongViec
             DialogResult ketQua = frmDangKy.ShowDialog();
             this.Show();
 
-            if (ketQua == DialogResult.OK && !string.IsNullOrWhiteSpace(frmDangKy.RegisteredUsername))
+            if (ketQua == DialogResult.OK && !string.IsNullOrWhiteSpace(frmDangKy.TenDangNhapDaDangKy))
             {
-                FillUsernameAfterRegistration(frmDangKy.RegisteredUsername);
+                DienTenDangNhapSauDangKy(frmDangKy.TenDangNhapDaDangKy);
             }
         }
         //Mở form quên mật khẩu
-        private void OpenForgotPasswordForm()
+        private void MoFormQuenMatKhau()
         {
             frmQuenMK frmQuenMK = new frmQuenMK();
             this.Hide();
@@ -99,8 +104,7 @@ namespace QuanLyCongViec
             }
         }
         //Điền tên đăng nhập vào textbox sau khi đăng ký thành công
-        //<param name="tenDangNhap">Tên đăng nhập đã đăng ký</param>
-        private void FillUsernameAfterRegistration(string tenDangNhap)
+        private void DienTenDangNhapSauDangKy(string tenDangNhap)
         {
             txtTaiKhoan.Text = tenDangNhap;
             txtMatKhau.Clear();
@@ -108,45 +112,45 @@ namespace QuanLyCongViec
         }
         //Thực hiện quá trình đăng nhập
         //Bao gồm: kiểm tra lockout, validate input, xác thực thông tin, xử lý kết quả
-        private void PerformLogin()
+        private void ThucHienDangNhap()
         {
             try
             {
                 // Kiểm tra tài khoản có bị khóa không
-                if (IsAccountLocked())
+                if (TaiKhoanBiKhoa())
                 {
                     return;
                 }
                 // Reset lockout nếu đã hết hạn
-                ResetLockoutIfExpired();
+                DatLaiKhoaNeuHetHan();
                 // Validate dữ liệu đầu vào
-                if (!ValidateLoginInput())
+                if (!KiemTraDuLieuDangNhap())
                 {
                     return;
                 }
                 // Thực hiện xác thực đăng nhập
-                DataTable loginResult = AuthenticateUser();
+                DataTable loginResult = XacThucNguoiDung();
                 // Xử lý kết quả đăng nhập
-                ProcessLoginResult(loginResult);
+                XuLyKetQuaDangNhap(loginResult);
             }
             catch (Exception loi)
             {
-                ShowLoginError(loi);
+                HienThiLoiDangNhap(loi);
             }
         }
         //Kiểm tra tài khoản có đang bị khóa không
-        private bool IsAccountLocked()
+        private bool TaiKhoanBiKhoa()
         {
             if (_thoiGianKhoaDen.HasValue && DateTime.Now < _thoiGianKhoaDen.Value)
             {
                 int soPhutConLai = (int)(_thoiGianKhoaDen.Value - DateTime.Now).TotalMinutes;
-                ShowAccountLockedMessage(soPhutConLai);
+                HienThiThongBaoTaiKhoanBiKhoa(soPhutConLai);
                 return true;
             }
             return false;
         }
         //Hiển thị thông báo tài khoản bị khóa
-        private void ShowAccountLockedMessage(int soPhutConLai)
+        private void HienThiThongBaoTaiKhoanBiKhoa(int soPhutConLai)
         {
             string thongBao = $"Tài khoản đã bị khóa tạm thời do đăng nhập sai quá nhiều lần!\n\n" +
                            $"Vui lòng thử lại sau {soPhutConLai} phút.";
@@ -159,7 +163,7 @@ namespace QuanLyCongViec
             );
         }
         //Reset lockout nếu thời gian khóa đã hết hạn
-        private void ResetLockoutIfExpired()
+        private void DatLaiKhoaNeuHetHan()
         {
             if (_thoiGianKhoaDen.HasValue && DateTime.Now >= _thoiGianKhoaDen.Value)
             {
@@ -167,111 +171,146 @@ namespace QuanLyCongViec
                 _soLanDangNhapSai = 0;
             }
         }
-        //Validate dữ liệu đầu vào của form đăng nhập
-        //<returns>True nếu dữ liệu hợp lệ, False nếu không</returns>
-        private bool ValidateLoginInput()
+        //Kiểm tra dữ liệu đầu vào của form đăng nhập
+        private bool KiemTraDuLieuDangNhap()
         {
             if (string.IsNullOrWhiteSpace(txtTaiKhoan.Text))
             {
-                ShowValidationError("Vui lòng nhập tên đăng nhập!", txtTaiKhoan);
+                HienThiLoiKiemTra("Vui lòng nhập tên đăng nhập!", txtTaiKhoan);
                 return false;
             }
 
             if (string.IsNullOrWhiteSpace(txtMatKhau.Text))
             {
-                ShowValidationError("Vui lòng nhập mật khẩu!", txtMatKhau);
+                HienThiLoiKiemTra("Vui lòng nhập mật khẩu!", txtMatKhau);
+                return false;
+            }
+
+            //Kiểm tra định dạng tên đăng nhập
+            if (!PasswordHelper.IsValidUsername(txtTaiKhoan.Text.Trim()))
+            {
+                HienThiLoiKiemTra("Tên đăng nhập không hợp lệ!\n\nTên đăng nhập chỉ được chứa chữ cái, số và dấu gạch dưới (_).\nKhông được chứa ký tự đặc biệt hoặc khoảng trắng.", txtTaiKhoan);
+                return false;
+            }
+
+            //Kiểm tra mật khẩu không chứa ký tự nguy hiểm
+            if (!PasswordHelper.IsValidPassword(txtMatKhau.Text))
+            {
+                HienThiLoiKiemTra("Mật khẩu chứa ký tự không được phép!\n\nVui lòng sử dụng mật khẩu hợp lệ.", txtMatKhau);
                 return false;
             }
 
             return true;
         }
         //Hiển thị thông báo lỗi validation và focus vào control tương ứng
-        private void ShowValidationError(string message, Control control)
+        private void HienThiLoiKiemTra(string thongBao, Control dong)
         {
             MessageBox.Show(
-                message,
+                thongBao,
                 "Thông báo",
                 MessageBoxButtons.OK,
                 MessageBoxIcon.Warning
             );
-            control.Focus();
+            dong.Focus();
         }
         //Xác thực thông tin đăng nhập với database
-        private DataTable AuthenticateUser()
+        //Hỗ trợ cả mật khẩu dạng plain text (database cũ) và mật khẩu đã hash (database mới)
+        private DataTable XacThucNguoiDung()
         {
             string tenDangNhap = txtTaiKhoan.Text.Trim();
             string matKhau = txtMatKhau.Text;
 
-            SqlParameter[] thamSo = new SqlParameter[]
+            //Thử đăng nhập với mật khẩu plain text trước (tương thích với database cũ)
+            SqlParameter[] thamSoMatKhauThuong = new SqlParameter[]
             {
                 new SqlParameter("@Username", tenDangNhap),
                 new SqlParameter("@Password", matKhau)
             };
 
-            return DatabaseHelper.ExecuteStoredProcedure("sp_UserLogin", thamSo);
+            DataTable ketQuaMatKhauThuong = DatabaseHelper.ExecuteStoredProcedure("sp_UserLogin", thamSoMatKhauThuong);
+
+            //Nếu đăng nhập thành công với plain text, trả về kết quả
+            if (ketQuaMatKhauThuong != null && ketQuaMatKhauThuong.Rows.Count > 0)
+            {
+                return ketQuaMatKhauThuong;
+            }
+
+            //Nếu không thành công, thử với mật khẩu đã hash (tương thích với database mới)
+            string matKhauDaHash = PasswordHelper.HashPassword(matKhau);
+
+            SqlParameter[] thamSoMatKhauDaHash = new SqlParameter[]
+            {
+                new SqlParameter("@Username", tenDangNhap),
+                new SqlParameter("@Password", matKhauDaHash)
+            };
+
+            DataTable ketQuaMatKhauDaHash = DatabaseHelper.ExecuteStoredProcedure("sp_UserLogin", thamSoMatKhauDaHash);
+
+            // Trả về kết quả (có thể là empty nếu cả hai đều thất bại)
+            return ketQuaMatKhauDaHash;
         }
         //Xử lý kết quả đăng nhập từ database
-        private void ProcessLoginResult(DataTable ketQuaDangNhap)
+        private void XuLyKetQuaDangNhap(DataTable ketQuaDangNhap)
         {
             if (ketQuaDangNhap == null || ketQuaDangNhap.Rows.Count == 0)
             {
-                HandleFailedLogin();
+                XuLyDangNhapThatBai();
                 return;
             }
 
             DataRow dongNguoiDung = ketQuaDangNhap.Rows[0];
 
             // Kiểm tra ErrorCode nếu stored procedure trả về
-            if (HasErrorCode(dongNguoiDung))
+            if (CoMaLoi(dongNguoiDung))
             {
-                HandleErrorCodeResponse(dongNguoiDung);
+                XuLyPhanHoiMaLoi(dongNguoiDung);
                 return;
             }
 
             // Kiểm tra Id có null không (trường hợp stored procedure cũ)
-            if (IsUserIdNull(dongNguoiDung))
+            if (MaNguoiDungLaNull(dongNguoiDung))
             {
-                HandleFailedLogin();
+                XuLyDangNhapThatBai();
                 return;
             }
 
             // Đăng nhập thành công
-            HandleSuccessfulLogin(dongNguoiDung);
+            XuLyDangNhapThanhCong(dongNguoiDung);
         }
         //Kiểm tra xem kết quả có chứa ErrorCode không
-        private bool HasErrorCode(DataRow dongNguoiDung)
+        private bool CoMaLoi(DataRow dongNguoiDung)
         {
             return dongNguoiDung.Table.Columns.Contains("ErrorCode");
         }
         //Xử lý response có ErrorCode từ stored procedure
-        private void HandleErrorCodeResponse(DataRow dongNguoiDung)
+        private void XuLyPhanHoiMaLoi(DataRow dongNguoiDung)
         {
-            object maLoiObj = dongNguoiDung["ErrorCode"];
-            if (maLoiObj == null || maLoiObj == DBNull.Value)
+            object doiTuongMaLoi = dongNguoiDung["ErrorCode"];
+            if (doiTuongMaLoi == null || doiTuongMaLoi == DBNull.Value)
             {
                 return;
             }
 
-            int maLoi = Convert.ToInt32(maLoiObj);
-            if (maLoi == 0)
+            int maLoi = Convert.ToInt32(doiTuongMaLoi);
+            if (maLoi == KHONG_CO_LOI)
             {
-                return; // Không có lỗi
+                return;
             }
 
             string thongBaoLoi = dongNguoiDung["ErrorMessage"]?.ToString() ?? "Đăng nhập thất bại";
 
-            if (maLoi == 2) // Tài khoản bị khóa
+            if (maLoi == TAI_KHOAN_BI_KHOA)
             {
-                ShowAccountDisabledMessage(thongBaoLoi);
+                HienThiThongBaoTaiKhoanBiVoHieu(thongBaoLoi);
             }
             else
             {
                 _soLanDangNhapSai++;
-                HandleFailedLogin();
+                XuLyDangNhapThatBai();
             }
         }
         //Hiển thị thông báo tài khoản bị vô hiệu hóa
-        private void ShowAccountDisabledMessage(string thongBaoLoi)
+        private void HienThiThongBaoTaiKhoanBiVoHieu(string thongBaoLoi)
         {
             string thongBao = $"Tài khoản đã bị khóa hoặc vô hiệu hóa!\n\n{thongBaoLoi}\n\nVui lòng liên hệ quản trị viên.";
 
@@ -283,58 +322,55 @@ namespace QuanLyCongViec
             );
         }
         //Kiểm tra mã người dùng có null không
-        private bool IsUserIdNull(DataRow dongNguoiDung)
+        private bool MaNguoiDungLaNull(DataRow dongNguoiDung)
         {
             return dongNguoiDung["Id"] == null || dongNguoiDung["Id"] == DBNull.Value;
         }
         //Xử lý khi đăng nhập thành công
-        private void HandleSuccessfulLogin(DataRow dongNguoiDung)
+        private void XuLyDangNhapThanhCong(DataRow dongNguoiDung)
         {
             int maNguoiDung = Convert.ToInt32(dongNguoiDung["Id"]);
             string tenDangNhap = txtTaiKhoan.Text.Trim();
             string hoTen = dongNguoiDung["FullName"].ToString();
 
-            // Reset số lần thất bại
-            ResetFailedLoginAttempts();
+            //Reset số lần thất bại
+            DatLaiSoLanDangNhapSai();
 
-            // Lưu thông tin đăng nhập nếu chọn "Ghi nhớ"
-            SaveOrClearRememberedCredentials(tenDangNhap);
+            //Lưu thông tin đăng nhập nếu chọn "Ghi nhớ"
+            LuuHoacXoaThongTinDangNhap(tenDangNhap);
 
-            // LƯU THÔNG TIN NGƯỜI DÙNG VÀO CurrentUser ĐỂ CÁC FORM KHÁC CÓ THỂ SỬ DỤNG
+            //Lưu thông tin người dùng vào CurrentUser để các form khác có thể sử dụng
             CurrentUser.SetCurrentUser(maNguoiDung, tenDangNhap, hoTen);
 
-            // Hiển thị thông báo thành công
-            ShowSuccessMessage(hoTen);
+            //Hiển thị thông báo thành công
+            HienThiThongBaoThanhCong(hoTen);
 
-            // Sau này khi có frmMain, sẽ mở frmMain với thông tin này:
-             this.Hide();
-             frrmMain mainForm = new frrmMain(maNguoiDung, tenDangNhap, hoTen);
-             mainForm.ShowDialog();
-             this.Close();
-
-            // Đóng form
-
+            //Mở form chính và đóng form đăng nhập
+            this.Hide();
+            frrmMain formChinh = new frrmMain(maNguoiDung, tenDangNhap, hoTen);
+            formChinh.ShowDialog();
+            this.Close();
         }
         //Reset số lần đăng nhập thất bại về 0
-        private void ResetFailedLoginAttempts()
+        private void DatLaiSoLanDangNhapSai()
         {
             _soLanDangNhapSai = 0;
             _thoiGianKhoaDen = null;
         }
         //Lưu hoặc xóa thông tin đăng nhập tùy theo checkbox "Ghi nhớ"
-        private void SaveOrClearRememberedCredentials(string tenDangNhap)
+        private void LuuHoacXoaThongTinDangNhap(string tenDangNhap)
         {
             if (chkGhiNhoDangNhap.Checked)
             {
-                SaveRememberedCredentials(tenDangNhap);
+                LuuThongTinDangNhap(tenDangNhap);
             }
             else
             {
-                ClearRememberedCredentials();
+                XoaThongTinDangNhap();
             }
         }
         //Hiển thị thông báo đăng nhập thành công
-        private void ShowSuccessMessage(string hoTen)
+        private void HienThiThongBaoThanhCong(string hoTen)
         {
             MessageBox.Show(
                 $"Đăng nhập thành công!\n\nXin chào, {hoTen}!",
@@ -345,11 +381,11 @@ namespace QuanLyCongViec
         }
         //Xử lý khi đăng nhập thất bại
         //Tăng số lần thất bại và hiển thị thông báo phù hợp
-        private void HandleFailedLogin()
+        private void XuLyDangNhapThatBai()
         {
             _soLanDangNhapSai++;
 
-            string thongBaoLoi = BuildFailedLoginMessage();
+            string thongBaoLoi = TaoThongBaoDangNhapThatBai();
 
             MessageBox.Show(
                 thongBaoLoi,
@@ -358,22 +394,21 @@ namespace QuanLyCongViec
                 MessageBoxIcon.Error
             );
 
-            ClearPasswordField();
+            XoaTruongMatKhau();
         }
-        //Xây dựng thông báo lỗi khi đăng nhập thất bại
-        //<returns>Thông báo lỗi</returns>
-        private string BuildFailedLoginMessage()
+        //Tạo thông báo lỗi khi đăng nhập thất bại
+        private string TaoThongBaoDangNhapThatBai()
         {
             string thongBaoCoBan = "Tên đăng nhập hoặc mật khẩu không đúng!\n\nVui lòng kiểm tra lại.";
 
-            // Lấy giá trị từ database
+            //Lấy giá trị từ database
             int soLanDangNhapSaiToiDa = Helpers.SystemSettings.MaxLoginAttempts;
             int thoiGianKhoaPhut = Helpers.SystemSettings.LockoutMinutes;
 
             if (_soLanDangNhapSai >= soLanDangNhapSaiToiDa)
             {
                 _thoiGianKhoaDen = DateTime.Now.AddMinutes(thoiGianKhoaPhut);
-                return thongBaoCoBan + $"\n\n⚠️ Cảnh báo: Bạn đã đăng nhập sai {_soLanDangNhapSai} lần.\n" +
+                return thongBaoCoBan + $"\n\nCảnh báo: Bạn đã đăng nhập sai {_soLanDangNhapSai} lần.\n" +
                                    $"Tài khoản sẽ bị khóa tạm thời trong {thoiGianKhoaPhut} phút.";
             }
             else
@@ -383,13 +418,13 @@ namespace QuanLyCongViec
             }
         }
         //Xóa trường mật khẩu và focus vào đó
-        private void ClearPasswordField()
+        private void XoaTruongMatKhau()
         {
             txtMatKhau.Clear();
             txtMatKhau.Focus();
         }
         //Hiển thị thông báo lỗi khi có exception xảy ra
-        private void ShowLoginError(Exception loi)
+        private void HienThiLoiDangNhap(Exception loi)
         {
             MessageBox.Show(
                 $"Lỗi khi đăng nhập!\n\nChi tiết: {loi.Message}",
@@ -399,7 +434,7 @@ namespace QuanLyCongViec
             );
         }
         //Lưu thông tin đăng nhập vào Settings (chỉ lưu tên đăng nhập, không lưu mật khẩu)
-        private void SaveRememberedCredentials(string tenDangNhap)
+        private void LuuThongTinDangNhap(string tenDangNhap)
         {
             try
             {
@@ -412,7 +447,7 @@ namespace QuanLyCongViec
             }
         }
         //Xóa thông tin đăng nhập đã lưu trong Settings
-        private void ClearRememberedCredentials()
+        private void XoaThongTinDangNhap()
         {
             try
             {
@@ -426,7 +461,7 @@ namespace QuanLyCongViec
         }
         //Load thông tin đăng nhập đã lưu từ Settings
         //Tự động điền tên đăng nhập và check checkbox "Ghi nhớ" nếu có
-        private void LoadRememberedCredentials()
+        private void TaiThongTinDangNhap()
         {
             try
             {

@@ -291,31 +291,6 @@ namespace QuanLyCongViec
             }
         }
 
-        // Toggle hiển thị form thời khóa biểu (Calendar)
-        private void btn_ThongBao_Click(object sender, EventArgs e)
-        {
-            if (_calendarForm == null || _calendarForm.IsDisposed)
-            {
-                // Nếu form Calendar chưa mở hoặc đã bị đóng → mở lại
-                MoCalendarBenPhai();
-            }
-            else
-            {
-                // Nếu form Calendar đang mở
-                if (_calendarForm.Visible)
-                {
-                    // Nếu đang hiển thị → ẩn đi
-                    _calendarForm.Hide();
-                }
-                else
-                {
-                    // Nếu đang ẩn → hiển thị lại
-                    _calendarForm.Show();
-                    _calendarForm.BringToFront();
-                }
-            }
-        }
-
         // Mở form thông báo
         private void btn_ThongBao_Click(object sender, EventArgs e)
         {

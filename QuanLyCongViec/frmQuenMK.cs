@@ -9,6 +9,12 @@ namespace QuanLyCongViec
 {
     public partial class frmQuenMK : Form
     {
+        #region Constants - Hằng số
+        private const int DAT_LAI_MAT_KHAU_THANH_CONG = 1;
+        private const int KHONG_TIM_THAY_USER = -1;
+        private const int TAI_KHOAN_BI_VO_HIEU_HOA = -2;
+        #endregion
+
         #region Constructor - Hàm khởi tạo
         //Khởi tạo form quên mật khẩu
         public frmQuenMK()
@@ -22,7 +28,7 @@ namespace QuanLyCongViec
         //Xử lý sự kiện click nút Xác nhận
         private void btnXacNhan_Click(object sender, EventArgs e)
         {
-            PerformResetPassword();
+            ThucHienDatLaiMatKhau();
         }
 
         //Xử lý sự kiện click nút Hủy
@@ -65,7 +71,7 @@ namespace QuanLyCongViec
             if (e.KeyCode == Keys.Enter)
             {
                 e.SuppressKeyPress = true;
-                PerformResetPassword();
+                ThucHienDatLaiMatKhau();
             }
         }
 
@@ -73,25 +79,25 @@ namespace QuanLyCongViec
 
         #region Private Methods - Các phương thức riêng tư
         //Thực hiện reset mật khẩu
-        private void PerformResetPassword()
+        private void ThucHienDatLaiMatKhau()
         {
             try
             {
                 // Validate dữ liệu đầu vào
-                if (!ValidateInput())
+                if (!KiemTraDuLieu())
                 {
                     return;
                 }
 
                 // Lấy thông tin từ form
-                string usernameOrEmail = txtUsernameOrEmail.Text.Trim();
+                string tenDangNhapHoacEmail = txtUsernameOrEmail.Text.Trim();
                 string matKhauMoi = txtMatKhauMoi.Text;
 
                 // Reset password trong database
-                int result = ResetPasswordInDatabase(usernameOrEmail, matKhauMoi);
+                int ketQua = DatLaiMatKhauTrongDatabase(tenDangNhapHoacEmail, matKhauMoi);
 
                 // Xử lý kết quả
-                ProcessResetResult(result);
+                XuLyKetQuaDatLaiMatKhau(ketQua);
             }
             catch (Exception loi)
             {
@@ -104,89 +110,84 @@ namespace QuanLyCongViec
             }
         }
 
-        /// <summary>
-        /// Validate dữ liệu đầu vào
-        /// </summary>
-        /// <returns>True nếu hợp lệ, False nếu không hợp lệ</returns>
-        private bool ValidateInput()
+        //Kiểm tra dữ liệu đầu vào
+        private bool KiemTraDuLieu()
         {
-            // Kiểm tra username/email
+            return KiemTraTenDangNhapHoacEmail() &&
+                   KiemTraMatKhauMoi() &&
+                   KiemTraXacNhanMatKhau();
+        }
+
+        //Kiểm tra tên đăng nhập hoặc email
+        private bool KiemTraTenDangNhapHoacEmail()
+        {
             if (string.IsNullOrWhiteSpace(txtUsernameOrEmail.Text))
             {
-                MessageBox.Show(
-                    "Vui lòng nhập tên đăng nhập hoặc email!",
-                    "Thông báo",
-                    MessageBoxButtons.OK,
-                    MessageBoxIcon.Warning
-                );
-                txtUsernameOrEmail.Focus();
+                HienThiThongBaoLoi("Vui lòng nhập tên đăng nhập hoặc email!", txtUsernameOrEmail);
                 return false;
             }
 
-            // Kiểm tra mật khẩu mới
+            string tenDangNhapHoacEmail = txtUsernameOrEmail.Text.Trim();
+
+            //Kiểm tra không chứa SQL injection patterns
+            if (PasswordHelper.ContainsDangerousCharacters(tenDangNhapHoacEmail))
+            {
+                HienThiThongBaoLoi("Tên đăng nhập hoặc email chứa ký tự không được phép!", txtUsernameOrEmail);
+                txtUsernameOrEmail.SelectAll();
+                return false;
+            }
+
+            return true;
+        }
+
+        //Kiểm tra mật khẩu mới
+        private bool KiemTraMatKhauMoi()
+        {
             if (string.IsNullOrWhiteSpace(txtMatKhauMoi.Text))
             {
-                MessageBox.Show(
-                    "Vui lòng nhập mật khẩu mới!",
-                    "Thông báo",
-                    MessageBoxButtons.OK,
-                    MessageBoxIcon.Warning
-                );
-                txtMatKhauMoi.Focus();
+                HienThiThongBaoLoi("Vui lòng nhập mật khẩu mới!", txtMatKhauMoi);
                 return false;
             }
 
-            // Kiểm tra độ dài mật khẩu
-            int minPasswordLength = ValidationLimits.MinPasswordLength;
-            int maxPasswordLength = ValidationLimits.MaxPasswordLength;
+            //Kiểm tra độ dài mật khẩu
+            int doDaiMatKhauToiThieu = ValidationLimits.MinPasswordLength;
+            int doDaiMatKhauToiDa = ValidationLimits.MaxPasswordLength;
 
-            if (txtMatKhauMoi.Text.Length < minPasswordLength)
+            if (txtMatKhauMoi.Text.Length < doDaiMatKhauToiThieu)
             {
-                MessageBox.Show(
-                    $"Mật khẩu phải có ít nhất {minPasswordLength} ký tự!",
-                    "Thông báo",
-                    MessageBoxButtons.OK,
-                    MessageBoxIcon.Warning
-                );
-                txtMatKhauMoi.Focus();
+                HienThiThongBaoLoi($"Mật khẩu phải có ít nhất {doDaiMatKhauToiThieu} ký tự!", txtMatKhauMoi);
                 return false;
             }
 
-            if (txtMatKhauMoi.Text.Length > maxPasswordLength)
+            if (txtMatKhauMoi.Text.Length > doDaiMatKhauToiDa)
             {
-                MessageBox.Show(
-                    $"Mật khẩu không được vượt quá {maxPasswordLength} ký tự!",
-                    "Thông báo",
-                    MessageBoxButtons.OK,
-                    MessageBoxIcon.Warning
-                );
-                txtMatKhauMoi.Focus();
+                HienThiThongBaoLoi($"Mật khẩu không được vượt quá {doDaiMatKhauToiDa} ký tự!", txtMatKhauMoi);
                 return false;
             }
 
-            // Kiểm tra xác nhận mật khẩu
+            //Kiểm tra không chứa SQL injection patterns
+            if (!PasswordHelper.IsValidPassword(txtMatKhauMoi.Text))
+            {
+                HienThiThongBaoLoi("Mật khẩu chứa ký tự không được phép!\n\nVui lòng sử dụng mật khẩu hợp lệ, không chứa các ký tự đặc biệt nguy hiểm.", txtMatKhauMoi);
+                return false;
+            }
+
+            return true;
+        }
+
+        //Kiểm tra xác nhận mật khẩu
+        private bool KiemTraXacNhanMatKhau()
+        {
             if (string.IsNullOrWhiteSpace(txtXacNhanMatKhau.Text))
             {
-                MessageBox.Show(
-                    "Vui lòng xác nhận mật khẩu mới!",
-                    "Thông báo",
-                    MessageBoxButtons.OK,
-                    MessageBoxIcon.Warning
-                );
-                txtXacNhanMatKhau.Focus();
+                HienThiThongBaoLoi("Vui lòng xác nhận mật khẩu mới!", txtXacNhanMatKhau);
                 return false;
             }
 
-            // Kiểm tra mật khẩu khớp
+            //Kiểm tra mật khẩu khớp
             if (txtMatKhauMoi.Text != txtXacNhanMatKhau.Text)
             {
-                MessageBox.Show(
-                    "Mật khẩu xác nhận không khớp!",
-                    "Thông báo",
-                    MessageBoxButtons.OK,
-                    MessageBoxIcon.Warning
-                );
-                txtXacNhanMatKhau.Focus();
+                HienThiThongBaoLoi("Mật khẩu xác nhận không khớp!", txtXacNhanMatKhau);
                 txtXacNhanMatKhau.SelectAll();
                 return false;
             }
@@ -194,32 +195,45 @@ namespace QuanLyCongViec
             return true;
         }
 
-        /// <summary>
-        /// Reset password trong database
-        /// </summary>
-        /// <returns>1: Thành công, -1: Không tìm thấy user, -2: Tài khoản bị vô hiệu hóa</returns>
-        private int ResetPasswordInDatabase(string usernameOrEmail, string newPassword)
+        //Hiển thị thông báo lỗi và focus vào control
+        private void HienThiThongBaoLoi(string thongBao, Control dong)
         {
+            MessageBox.Show(
+                thongBao,
+                "Thông báo",
+                MessageBoxButtons.OK,
+                MessageBoxIcon.Warning
+            );
+            dong.Focus();
+        }
+
+        //Đặt lại mật khẩu trong database
+        //Trả về: 1 (thành công), -1 (không tìm thấy user), -2 (tài khoản bị vô hiệu hóa)
+        private int DatLaiMatKhauTrongDatabase(string tenDangNhapHoacEmail, string matKhauMoi)
+        {
+            //Hash mật khẩu trước khi lưu vào database
+            string matKhauDaHash = PasswordHelper.HashPassword(matKhauMoi);
+
             SqlParameter[] thamSo = new SqlParameter[]
             {
-                new SqlParameter("@UsernameOrEmail", usernameOrEmail),
-                new SqlParameter("@NewPassword", newPassword),
+                new SqlParameter("@UsernameOrEmail", tenDangNhapHoacEmail),
+                new SqlParameter("@NewPassword", matKhauDaHash),
                 new SqlParameter("@UserId", SqlDbType.Int) { Direction = ParameterDirection.Output },
                 new SqlParameter("@Result", SqlDbType.Int) { Direction = ParameterDirection.Output }
             };
 
             DatabaseHelper.ExecuteStoredProcedureNonQuery("sp_ResetPassword", thamSo);
 
-            int result = Convert.ToInt32(thamSo[3].Value);
-            return result;
+            int ketQua = Convert.ToInt32(thamSo[3].Value);
+            return ketQua;
         }
 
-        //Xử lý kết quả reset password
-        private void ProcessResetResult(int result)
+        //Xử lý kết quả đặt lại mật khẩu
+        private void XuLyKetQuaDatLaiMatKhau(int ketQua)
         {
-            switch (result)
+            switch (ketQua)
             {
-                case 1: // Thành công
+                case DAT_LAI_MAT_KHAU_THANH_CONG:
                     MessageBox.Show(
                         "Đặt lại mật khẩu thành công!\nVui lòng đăng nhập lại với mật khẩu mới.",
                         "Thành công",
@@ -230,7 +244,7 @@ namespace QuanLyCongViec
                     this.Close();
                     break;
 
-                case -1: // Không tìm thấy user
+                case KHONG_TIM_THAY_USER:
                     MessageBox.Show(
                         "Không tìm thấy tài khoản với thông tin đã nhập!\nVui lòng kiểm tra lại tên đăng nhập hoặc email.",
                         "Thông báo",
@@ -241,7 +255,7 @@ namespace QuanLyCongViec
                     txtUsernameOrEmail.SelectAll();
                     break;
 
-                case -2: // Tài khoản bị vô hiệu hóa
+                case TAI_KHOAN_BI_VO_HIEU_HOA:
                     MessageBox.Show(
                         "Tài khoản của bạn đã bị vô hiệu hóa!\nVui lòng liên hệ quản trị viên để được hỗ trợ.",
                         "Thông báo",

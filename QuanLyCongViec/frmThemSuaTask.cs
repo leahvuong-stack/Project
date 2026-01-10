@@ -72,7 +72,7 @@ namespace QuanLyCongViec
                         newRow["TenCongViec"] = row["Title"];
                         newRow["TrangThai"] = ConvertStatus(row["Status"].ToString());
                         newRow["NguoiPhuTrach"] = row["UserFullName"];
-                        newRow["NgayBatDau"] = row["StartDate"];  // ✅ Sử dụng StartDate thay vì CreatedDate
+                        newRow["NgayBatDau"] = row["CreatedDate"];  // Sử dụng CreatedDate thay vì StartDate (không tồn tại trong DB)
                         newRow["NgayKetThuc"] = row["DueDate"];
                         newRow["DoUuTien"] = ConvertPriority(row["Priority"].ToString());
                         newRow["Category"] = row["Category"];
@@ -210,7 +210,6 @@ namespace QuanLyCongViec
                     new SqlParameter("@Priority", priority),
                     new SqlParameter("@Status", status),
                     new SqlParameter("@Category", category),
-                    new SqlParameter("@StartDate", dtpNgayBatDau.Value),  // ✅ Thêm StartDate
                     new SqlParameter("@DueDate", dtpNgayKetThuc.Value),
                     taskIdParam
                 };
@@ -273,7 +272,6 @@ namespace QuanLyCongViec
                     new SqlParameter("@Priority", priority),
                     new SqlParameter("@Status", status),
                     new SqlParameter("@Category", category),
-                    new SqlParameter("@StartDate", dtpNgayBatDau.Value),  // ✅ Thêm StartDate
                     new SqlParameter("@DueDate", dtpNgayKetThuc.Value)
                 };
 

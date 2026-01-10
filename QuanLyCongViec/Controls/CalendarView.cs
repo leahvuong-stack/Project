@@ -255,9 +255,19 @@ namespace QuanLyCongViec.Controls
 
                 if (_userId > 0)
                 {
-                    // Gọi stored procedure để lấy task count theo ngày
-                    DataTable dt = DatabaseHelper.ExecuteStoredProcedure(
-                        "sp_GetTaskCountByMonth",
+                    // Query SQL trực tiếp để lấy task count theo ngày (thay thế stored procedure)
+                    string query = @"
+                        SELECT CAST(DueDate AS DATE) AS TaskDate, COUNT(*) AS TaskCount
+                        FROM Tasks
+                        WHERE UserId = @UserId 
+                            AND IsDeleted = 0
+                            AND YEAR(DueDate) = @Year
+                            AND MONTH(DueDate) = @Month
+                        GROUP BY CAST(DueDate AS DATE)
+                        ORDER BY TaskDate";
+
+                    DataTable dt = DatabaseHelper.ExecuteQuery(
+                        query,
                         new System.Data.SqlClient.SqlParameter("@UserId", _userId),
                         new System.Data.SqlClient.SqlParameter("@Year", _currentMonth.Year),
                         new System.Data.SqlClient.SqlParameter("@Month", _currentMonth.Month)
