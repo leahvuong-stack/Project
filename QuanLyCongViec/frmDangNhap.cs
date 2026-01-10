@@ -97,7 +97,7 @@ namespace QuanLyCongViec
             DialogResult ketQua = frmQuenMK.ShowDialog();
             this.Show();
 
-            // Nếu reset password thành công, có thể focus vào textbox tài khoản
+            //Nếu reset password thành công, có thể focus vào textbox tài khoản
             if (ketQua == DialogResult.OK)
             {
                 txtTaiKhoan.Focus();
@@ -116,21 +116,21 @@ namespace QuanLyCongViec
         {
             try
             {
-                // Kiểm tra tài khoản có bị khóa không
+                //Kiểm tra tài khoản có bị khóa không
                 if (TaiKhoanBiKhoa())
                 {
                     return;
                 }
-                // Reset lockout nếu đã hết hạn
+                //Reset lockout nếu đã hết hạn
                 DatLaiKhoaNeuHetHan();
-                // Validate dữ liệu đầu vào
+                //Validate dữ liệu đầu vào
                 if (!KiemTraDuLieuDangNhap())
                 {
                     return;
                 }
-                // Thực hiện xác thực đăng nhập
+                //Thực hiện xác thực đăng nhập
                 DataTable loginResult = XacThucNguoiDung();
-                // Xử lý kết quả đăng nhập
+                //Xử lý kết quả đăng nhập
                 XuLyKetQuaDangNhap(loginResult);
             }
             catch (Exception loi)
@@ -246,7 +246,7 @@ namespace QuanLyCongViec
 
             DataTable ketQuaMatKhauDaHash = DatabaseHelper.ExecuteStoredProcedure("sp_UserLogin", thamSoMatKhauDaHash);
 
-            // Trả về kết quả (có thể là empty nếu cả hai đều thất bại)
+            //Trả về kết quả (có thể là empty nếu cả hai đều thất bại)
             return ketQuaMatKhauDaHash;
         }
         //Xử lý kết quả đăng nhập từ database
@@ -260,21 +260,21 @@ namespace QuanLyCongViec
 
             DataRow dongNguoiDung = ketQuaDangNhap.Rows[0];
 
-            // Kiểm tra ErrorCode nếu stored procedure trả về
+            //Kiểm tra ErrorCode nếu stored procedure trả về
             if (CoMaLoi(dongNguoiDung))
             {
                 XuLyPhanHoiMaLoi(dongNguoiDung);
                 return;
             }
 
-            // Kiểm tra Id có null không (trường hợp stored procedure cũ)
+            //Kiểm tra Id có null không (trường hợp stored procedure cũ)
             if (MaNguoiDungLaNull(dongNguoiDung))
             {
                 XuLyDangNhapThatBai();
                 return;
             }
 
-            // Đăng nhập thành công
+            //Đăng nhập thành công
             XuLyDangNhapThanhCong(dongNguoiDung);
         }
         //Kiểm tra xem kết quả có chứa ErrorCode không
@@ -443,7 +443,7 @@ namespace QuanLyCongViec
             }
             catch
             {
-                // Bỏ qua lỗi khi lưu settings để không làm gián đoạn quá trình đăng nhập
+                //Bỏ qua lỗi khi lưu settings để không làm gián đoạn quá trình đăng nhập
             }
         }
         //Xóa thông tin đăng nhập đã lưu trong Settings
@@ -456,7 +456,7 @@ namespace QuanLyCongViec
             }
             catch
             {
-                // Bỏ qua lỗi khi lưu settings
+                //Bỏ qua lỗi khi lưu settings
             }
         }
         //Load thông tin đăng nhập đã lưu từ Settings
@@ -475,7 +475,7 @@ namespace QuanLyCongViec
             }
             catch
             {
-                // Bỏ qua lỗi khi load settings
+                //Bỏ qua lỗi khi load settings
             }
         }
         #endregion

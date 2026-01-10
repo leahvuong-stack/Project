@@ -18,8 +18,7 @@ namespace QuanLyCongViec
         //Lưu giá trị hợp lệ cuối cùng để restore khi phát hiện ký tự không hợp lệ
         private string _matKhauHopLeCuoi = "";
         private string _xacNhanMatKhauHopLeCuoi = "";
-        private string _tenDangNhapHopLeCuoi = "";
-        private bool _dangKiemTra = false; // Flag để tránh recursive calls
+        private bool _dangKiemTra = false; //Flag để tránh recursive calls
         #endregion
 
         #region Constructor - Hàm khởi tạo
@@ -66,16 +65,16 @@ namespace QuanLyCongViec
         {
             try
             {
-                // Validate dữ liệu đầu vào
+                //Validate dữ liệu đầu vào
                 if (!KiemTraDuLieu())
                 {
                     return;
                 }
-                // Lấy thông tin từ form
+                //Lấy thông tin từ form
                 DuLieuDangKy duLieuDangKy = LayDuLieuDangKy();
-                // Đăng ký tài khoản vào database
+                //Đăng ký tài khoản vào database
                 int maNguoiDung = DangKyNguoiDungVaoDatabase(duLieuDangKy, duLieuDangKy.MatKhau);
-                // Xử lý kết quả đăng ký
+                //Xử lý kết quả đăng ký
                 XuLyKetQuaDangKy(maNguoiDung, duLieuDangKy);
             }
             catch (Exception loi)
@@ -136,7 +135,7 @@ namespace QuanLyCongViec
         //Xử lý kết quả đăng ký từ database
         private void XuLyKetQuaDangKy(int maNguoiDung, DuLieuDangKy duLieuDangKy)
         {
-            // Lấy các mã lỗi từ database
+            //Lấy các mã lỗi từ database
             int maLoiTenDangNhapTonTai = SystemSettings.ErrorUsernameExists;
             int maLoiEmailTonTai = SystemSettings.ErrorEmailExists;
 
@@ -427,7 +426,7 @@ namespace QuanLyCongViec
 
             dong.Focus();
 
-            // Select all text nếu là TextBox
+            //Select all text nếu là TextBox
             if (dong is TextBox oNhapVanBan)
             {
                 oNhapVanBan.SelectAll();

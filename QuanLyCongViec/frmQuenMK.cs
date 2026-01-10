@@ -83,20 +83,20 @@ namespace QuanLyCongViec
         {
             try
             {
-                // Validate dữ liệu đầu vào
+                //Validate dữ liệu đầu vào
                 if (!KiemTraDuLieu())
                 {
                     return;
                 }
 
-                // Lấy thông tin từ form
+                //Lấy thông tin từ form
                 string tenDangNhapHoacEmail = txtUsernameOrEmail.Text.Trim();
                 string matKhauMoi = txtMatKhauMoi.Text;
 
-                // Reset password trong database
+                //Reset password trong database
                 int ketQua = DatLaiMatKhauTrongDatabase(tenDangNhapHoacEmail, matKhauMoi);
 
-                // Xử lý kết quả
+                //Xử lý kết quả
                 XuLyKetQuaDatLaiMatKhau(ketQua);
             }
             catch (Exception loi)
