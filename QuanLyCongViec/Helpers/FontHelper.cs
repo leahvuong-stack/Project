@@ -4,27 +4,12 @@ using System.Windows.Forms;
 
 namespace QuanLyCongViec.Helpers
 {
-    /// <summary>
-    /// Helper class để set font Unicode cho các controls
-    /// Đảm bảo tiếng Việt hiển thị đúng
-    /// </summary>
     public static class FontHelper
     {
-        /// <summary>
-        /// Font mặc định hỗ trợ Unicode (tiếng Việt)
-        /// Sử dụng font hệ thống hỗ trợ Unicode tốt nhất
-        /// </summary>
         public static Font DefaultUnicodeFont = new Font("Segoe UI", 9F, FontStyle.Regular, GraphicsUnit.Point, ((byte)(0)));
 
-        /// <summary>
-        /// Font cho DataGridView hỗ trợ Unicode
-        /// </summary>
         public static Font DataGridViewFont = new Font("Segoe UI", 9F, FontStyle.Regular, GraphicsUnit.Point, ((byte)(0)));
 
-        /// <summary>
-        /// Set font Unicode cho tất cả controls trong form
-        /// </summary>
-        /// <param name="form">Form cần set font</param>
         public static void SetUnicodeFont(Form form)
         {
             if (form == null) return;
@@ -36,10 +21,6 @@ namespace QuanLyCongViec.Helpers
             SetUnicodeFontRecursive(form);
         }
 
-        /// <summary>
-        /// Set font Unicode cho control và tất cả controls con
-        /// </summary>
-        /// <param name="control">Control cần set font</param>
         private static void SetUnicodeFontRecursive(Control control)
         {
             if (control == null) return;
@@ -64,10 +45,6 @@ namespace QuanLyCongViec.Helpers
             }
         }
 
-        /// <summary>
-        /// Set font Unicode cho DataGridView
-        /// </summary>
-        /// <param name="dataGridView">DataGridView cần set font</param>
         public static void SetUnicodeFontForDataGridView(DataGridView dataGridView)
         {
             if (dataGridView == null) return;
@@ -88,4 +65,3 @@ namespace QuanLyCongViec.Helpers
         }
     }
 }
-

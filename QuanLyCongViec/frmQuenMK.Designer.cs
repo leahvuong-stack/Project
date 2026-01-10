@@ -2,15 +2,8 @@ namespace QuanLyCongViec
 {
     partial class frmQuenMK
     {
-        /// <summary>
-        /// Required designer variable.
-        /// </summary>
         private System.ComponentModel.IContainer components = null;
 
-        /// <summary>
-        /// Clean up any resources being used.
-        /// </summary>
-        /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
         protected override void Dispose(bool disposing)
         {
             if (disposing && (components != null))
@@ -47,7 +40,7 @@ namespace QuanLyCongViec
             this.lblTitle.Font = new System.Drawing.Font("Times New Roman", 19.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lblTitle.Location = new System.Drawing.Point(120, 20);
             this.lblTitle.Name = "lblTitle";
-            this.lblTitle.Size = new System.Drawing.Size(263, 38);
+            this.lblTitle.Size = new System.Drawing.Size(249, 37);
             this.lblTitle.TabIndex = 0;
             this.lblTitle.Text = "Đặt lại mật khẩu";
             // 
@@ -63,9 +56,9 @@ namespace QuanLyCongViec
             // 
             // txtUsernameOrEmail
             // 
-            this.txtUsernameOrEmail.Location = new System.Drawing.Point(197, 76);
+            this.txtUsernameOrEmail.Location = new System.Drawing.Point(222, 76);
             this.txtUsernameOrEmail.Name = "txtUsernameOrEmail";
-            this.txtUsernameOrEmail.Size = new System.Drawing.Size(250, 22);
+            this.txtUsernameOrEmail.Size = new System.Drawing.Size(225, 22);
             this.txtUsernameOrEmail.TabIndex = 1;
             this.txtUsernameOrEmail.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txtUsernameOrEmail_KeyDown);
             // 
@@ -81,10 +74,10 @@ namespace QuanLyCongViec
             // 
             // txtMatKhauMoi
             // 
-            this.txtMatKhauMoi.Location = new System.Drawing.Point(197, 116);
+            this.txtMatKhauMoi.Location = new System.Drawing.Point(222, 116);
             this.txtMatKhauMoi.Name = "txtMatKhauMoi";
             this.txtMatKhauMoi.PasswordChar = '*';
-            this.txtMatKhauMoi.Size = new System.Drawing.Size(250, 22);
+            this.txtMatKhauMoi.Size = new System.Drawing.Size(225, 22);
             this.txtMatKhauMoi.TabIndex = 2;
             this.txtMatKhauMoi.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txtMatKhauMoi_KeyDown);
             // 
@@ -100,10 +93,10 @@ namespace QuanLyCongViec
             // 
             // txtXacNhanMatKhau
             // 
-            this.txtXacNhanMatKhau.Location = new System.Drawing.Point(197, 156);
+            this.txtXacNhanMatKhau.Location = new System.Drawing.Point(222, 156);
             this.txtXacNhanMatKhau.Name = "txtXacNhanMatKhau";
             this.txtXacNhanMatKhau.PasswordChar = '*';
-            this.txtXacNhanMatKhau.Size = new System.Drawing.Size(250, 22);
+            this.txtXacNhanMatKhau.Size = new System.Drawing.Size(225, 22);
             this.txtXacNhanMatKhau.TabIndex = 3;
             this.txtXacNhanMatKhau.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txtXacNhanMatKhau_KeyDown);
             // 
@@ -197,6 +190,8 @@ namespace QuanLyCongViec
         private System.Windows.Forms.Label lblHint;
     }
 }
+
+
 
 
 

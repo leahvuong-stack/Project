@@ -316,6 +316,20 @@ namespace QuanLyCongViec
             }
         }
 
+        // Mở form thông báo
+        private void btn_ThongBao_Click(object sender, EventArgs e)
+        {
+            frmThongBao thongBaoForm = new frmThongBao(_currentUserId);
+            thongBaoForm.ShowDialog();
+        }
+
+        // Mở form hướng dẫn
+        private void btn_Help_Click(object sender, EventArgs e)
+        {
+            frmHuongDan huongDanForm = new frmHuongDan();
+            huongDanForm.ShowDialog();
+        }
+
         // Xử lý đăng xuất
         private void btn_DangXuat_Click(object sender, EventArgs e)
         {

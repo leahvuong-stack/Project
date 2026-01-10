@@ -5,83 +5,52 @@ using QuanLyCongViec.DataAccess;
 
 namespace QuanLyCongViec.Helpers
 {
-    /// <summary>
-    /// Class lấy các giới hạn validation từ database metadata
-    /// Không cần hardcode constants, tự động lấy từ database
-    /// </summary>
     public static class ValidationLimits
     {
         // Cache để tránh query database nhiều lần
         private static Dictionary<string, int> _cache = new Dictionary<string, int>();
         private static bool _isLoaded = false;
 
-        /// <summary>
-        /// Lấy độ dài tối thiểu của tên đăng nhập
-        /// </summary>
         public static int MinUsernameLength
         {
             get { return GetLimit("Username", "Min"); }
         }
 
-        /// <summary>
-        /// Lấy độ dài tối đa của tên đăng nhập
-        /// </summary>
         public static int MaxUsernameLength
         {
             get { return GetLimit("Username", "Max"); }
         }
 
-        /// <summary>
-        /// Lấy độ dài tối thiểu của mật khẩu
-        /// </summary>
         public static int MinPasswordLength
         {
             get { return GetLimit("PasswordHash", "Min"); }
         }
 
-        /// <summary>
-        /// Lấy độ dài tối đa của mật khẩu
-        /// </summary>
         public static int MaxPasswordLength
         {
             get { return GetLimit("PasswordHash", "Max"); }
         }
 
-        /// <summary>
-        /// Lấy độ dài tối thiểu của email
-        /// </summary>
         public static int MinEmailLength
         {
             get { return GetLimit("Email", "Min"); }
         }
 
-        /// <summary>
-        /// Lấy độ dài tối đa của email
-        /// </summary>
         public static int MaxEmailLength
         {
             get { return GetLimit("Email", "Max"); }
         }
 
-        /// <summary>
-        /// Lấy độ dài tối thiểu của họ tên
-        /// </summary>
         public static int MinFullNameLength
         {
             get { return GetLimit("FullName", "Min"); }
         }
 
-        /// <summary>
-        /// Lấy độ dài tối đa của họ tên
-        /// </summary>
         public static int MaxFullNameLength
         {
             get { return GetLimit("FullName", "Max"); }
         }
 
-        /// <summary>
-        /// Lấy giới hạn từ cache hoặc database
-        /// </summary>
         private static int GetLimit(string fieldName, string limitType)
         {
             // Load từ database lần đầu tiên
@@ -103,9 +72,6 @@ namespace QuanLyCongViec.Helpers
             return GetDefaultValue(fieldName, limitType);
         }
 
-        /// <summary>
-        /// Load các giới hạn từ database thông qua stored procedure
-        /// </summary>
         private static void LoadLimitsFromDatabase()
         {
             try
@@ -134,9 +100,6 @@ namespace QuanLyCongViec.Helpers
             }
         }
 
-        /// <summary>
-        /// Lấy giá trị mặc định nếu không kết nối được database
-        /// </summary>
         private static int GetDefaultValue(string fieldName, string limitType)
         {
             // Các giá trị mặc định dựa trên định nghĩa trong database
@@ -156,9 +119,6 @@ namespace QuanLyCongViec.Helpers
             }
         }
 
-        /// <summary>
-        /// Reset cache để load lại từ database (dùng khi cần refresh)
-        /// </summary>
         public static void Reset()
         {
             _cache.Clear();
@@ -166,4 +126,3 @@ namespace QuanLyCongViec.Helpers
         }
     }
 }
-

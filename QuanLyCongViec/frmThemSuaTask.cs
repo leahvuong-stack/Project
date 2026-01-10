@@ -457,6 +457,37 @@ namespace QuanLyCongViec
             }
         }
 
+        private void dgvCongViec_CellDoubleClick(object sender, DataGridViewCellEventArgs e)
+        {
+            if (e.RowIndex >= 0)
+            {
+                DataGridViewRow row = dgvCongViec.Rows[e.RowIndex];
+                
+                string ma = row.Cells["MaCongViec"]?.Value?.ToString() ?? "";
+                string ten = row.Cells["TenCongViec"]?.Value?.ToString() ?? "";
+                string uutien = row.Cells["DoUuTien"]?.Value?.ToString() ?? "";
+                string trangthai = row.Cells["TrangThai"]?.Value?.ToString() ?? "";
+                string nguoi = row.Cells["NguoiPhuTrach"]?.Value?.ToString() ?? "";
+                
+                // Format ngày tháng
+                string han = "";
+                if (row.Cells["NgayKetThuc"]?.Value != null)
+                {
+                    if (row.Cells["NgayKetThuc"].Value is DateTime dt)
+                    {
+                        han = dt.ToString("dd/MM/yyyy");
+                    }
+                    else if (DateTime.TryParse(row.Cells["NgayKetThuc"].Value.ToString(), out DateTime parsedDate))
+                    {
+                        han = parsedDate.ToString("dd/MM/yyyy");
+                    }
+                }
+                
+                frmChiTietTask chiTietForm = new frmChiTietTask(ma, ten, han, uutien, trangthai, nguoi);
+                chiTietForm.ShowDialog();
+            }
+        }
+
         private void LamRongForm()
         {
             _selectedTaskId = 0;

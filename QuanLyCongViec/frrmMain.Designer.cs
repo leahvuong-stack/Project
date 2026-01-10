@@ -1,16 +1,9 @@
-﻿namespace QuanLyCongViec
+namespace QuanLyCongViec
 {
     partial class frrmMain
     {
-        /// <summary>
-        /// Required designer variable.
-        /// </summary>
         private System.ComponentModel.IContainer components = null;
 
-        /// <summary>
-        /// Clean up any resources being used.
-        /// </summary>
-        /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
         protected override void Dispose(bool disposing)
         {
             if (disposing && (components != null))
@@ -30,6 +23,7 @@
         {
             this.lbl_Ten = new System.Windows.Forms.Label();
             this.btn_DangXuat = new System.Windows.Forms.Button();
+            this.btn_Help = new System.Windows.Forms.Button();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.lbl_NgayThang = new System.Windows.Forms.Label();
             this.lbl_quahan = new System.Windows.Forms.Label();
@@ -41,6 +35,7 @@
             this.btn_ThongBao = new System.Windows.Forms.Button();
             this.btn_QuanLyCongViec = new System.Windows.Forms.Button();
             this.btn_BaoCao = new System.Windows.Forms.Button();
+            this.btn_ThongBao = new System.Windows.Forms.Button();
             this.lbl_TongCongViec = new System.Windows.Forms.Label();
             this.panel_Tong = new System.Windows.Forms.Panel();
             this.panel_Doing = new System.Windows.Forms.Panel();
@@ -83,11 +78,22 @@
             this.btn_DangXuat.UseVisualStyleBackColor = false;
             this.btn_DangXuat.Click += new System.EventHandler(this.btn_DangXuat_Click);
             // 
+            // btn_Help
+            // 
+            this.btn_Help.Location = new System.Drawing.Point(324, 46);
+            this.btn_Help.Name = "btn_Help";
+            this.btn_Help.Size = new System.Drawing.Size(80, 24);
+            this.btn_Help.TabIndex = 5;
+            this.btn_Help.Text = "Trợ giúp";
+            this.btn_Help.UseVisualStyleBackColor = true;
+            this.btn_Help.Click += new System.EventHandler(this.btn_Help_Click);
+            // 
             // groupBox1
             // 
             this.groupBox1.BackColor = System.Drawing.Color.White;
             this.groupBox1.Controls.Add(this.lbl_NgayThang);
             this.groupBox1.Controls.Add(this.lbl_Ten);
+            this.groupBox1.Controls.Add(this.btn_Help);
             this.groupBox1.Controls.Add(this.btn_DangXuat);
             this.groupBox1.Font = new System.Drawing.Font("Segoe UI", 9F);
             this.groupBox1.Location = new System.Drawing.Point(12, 12);
@@ -231,6 +237,16 @@
             this.btn_BaoCao.UseVisualStyleBackColor = false;
             this.btn_BaoCao.Click += new System.EventHandler(this.btn_BaoCao_Click);
             // 
+            // btn_ThongBao
+            // 
+            this.btn_ThongBao.Location = new System.Drawing.Point(13, 105);
+            this.btn_ThongBao.Name = "btn_ThongBao";
+            this.btn_ThongBao.Size = new System.Drawing.Size(126, 74);
+            this.btn_ThongBao.TabIndex = 5;
+            this.btn_ThongBao.Text = "Thông Báo";
+            this.btn_ThongBao.UseVisualStyleBackColor = true;
+            this.btn_ThongBao.Click += new System.EventHandler(this.btn_ThongBao_Click);
+            // 
             // lbl_TongCongViec
             // 
             this.lbl_TongCongViec.AutoSize = true;
@@ -302,7 +318,7 @@
             this.Controls.Add(this.groupBox3);
             this.Controls.Add(this.groupBox1);
             this.Name = "frrmMain";
-            this.Text = "Hệ Thống Ứng dụng quản lý công việc";
+            this.Text = "Hệ Thống Ứng Dụng Quản Lý Công Việc";
             this.Load += new System.EventHandler(this.frrmMain_Load);
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
@@ -325,6 +341,7 @@
 
         private System.Windows.Forms.Label lbl_Ten;
         private System.Windows.Forms.Button btn_DangXuat;
+        private System.Windows.Forms.Button btn_Help;
         private System.Windows.Forms.GroupBox groupBox1;
         private System.Windows.Forms.Label lbl_NgayThang;
         private System.Windows.Forms.Button btn_LichSu;

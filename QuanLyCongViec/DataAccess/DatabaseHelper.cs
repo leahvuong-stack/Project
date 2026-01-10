@@ -5,17 +5,10 @@ using System.Data.SqlClient;
 
 namespace QuanLyCongViec.DataAccess
 {
-    /// <summary>
-    /// Helper class để kết nối và làm việc với Database
-    /// Tuân thủ Clean Code principles
-    /// </summary>
     public class DatabaseHelper
     {
         private static string _connectionString;
 
-        /// <summary>
-        /// Lấy connection string từ App.config
-        /// </summary>
         public static string ConnectionString
         {
             get
@@ -34,10 +27,6 @@ namespace QuanLyCongViec.DataAccess
             }
         }
 
-        /// <summary>
-        /// Kiểm tra kết nối database
-        /// </summary>
-        /// <returns>True nếu kết nối thành công</returns>
         public static bool TestConnection()
         {
             try
@@ -54,10 +43,6 @@ namespace QuanLyCongViec.DataAccess
             }
         }
 
-        /// <summary>
-        /// Tạo SqlConnection mới với encoding Unicode
-        /// </summary>
-        /// <returns>SqlConnection instance</returns>
         public static SqlConnection GetConnection()
         {
             SqlConnection connection = new SqlConnection(ConnectionString);
@@ -65,12 +50,6 @@ namespace QuanLyCongViec.DataAccess
             return connection;
         }
 
-        /// <summary>
-        /// Thực thi query không trả về kết quả (INSERT, UPDATE, DELETE)
-        /// </summary>
-        /// <param name="query">SQL query</param>
-        /// <param name="parameters">SqlParameters</param>
-        /// <returns>Số dòng bị ảnh hưởng</returns>
         public static int ExecuteNonQuery(string query, params SqlParameter[] parameters)
         {
             using (SqlConnection connection = GetConnection())
@@ -88,12 +67,6 @@ namespace QuanLyCongViec.DataAccess
             }
         }
 
-        /// <summary>
-        /// Thực thi query trả về một giá trị (Scalar)
-        /// </summary>
-        /// <param name="query">SQL query</param>
-        /// <param name="parameters">SqlParameters</param>
-        /// <returns>Giá trị trả về</returns>
         public static object ExecuteScalar(string query, params SqlParameter[] parameters)
         {
             using (SqlConnection connection = GetConnection())
@@ -111,12 +84,6 @@ namespace QuanLyCongViec.DataAccess
             }
         }
 
-        /// <summary>
-        /// Thực thi query trả về DataTable
-        /// </summary>
-        /// <param name="query">SQL query</param>
-        /// <param name="parameters">SqlParameters</param>
-        /// <returns>DataTable</returns>
         public static DataTable ExecuteQuery(string query, params SqlParameter[] parameters)
         {
             using (SqlConnection connection = GetConnection())
@@ -139,12 +106,6 @@ namespace QuanLyCongViec.DataAccess
             }
         }
 
-        /// <summary>
-        /// Thực thi Stored Procedure trả về DataTable
-        /// </summary>
-        /// <param name="procedureName">Tên stored procedure</param>
-        /// <param name="parameters">SqlParameters</param>
-        /// <returns>DataTable</returns>
         public static DataTable ExecuteStoredProcedure(string procedureName, params SqlParameter[] parameters)
         {
             using (SqlConnection connection = GetConnection())
@@ -169,13 +130,6 @@ namespace QuanLyCongViec.DataAccess
             }
         }
 
-        /// <summary>
-        /// Thực thi Stored Procedure không trả về kết quả
-        /// Lưu ý: Output parameters sẽ được cập nhật sau khi ExecuteNonQuery
-        /// </summary>
-        /// <param name="procedureName">Tên stored procedure</param>
-        /// <param name="parameters">SqlParameters (có thể chứa output parameters)</param>
-        /// <returns>Số dòng bị ảnh hưởng</returns>
         public static int ExecuteStoredProcedureNonQuery(string procedureName, params SqlParameter[] parameters)
         {
             using (SqlConnection connection = GetConnection())
@@ -200,12 +154,6 @@ namespace QuanLyCongViec.DataAccess
             }
         }
 
-        /// <summary>
-        /// Thực thi Stored Procedure trả về một giá trị vô hướng (scalar value).
-        /// </summary>
-        /// <param name="storedProcedureName">Tên stored procedure.</param>
-        /// <param name="parameters">Mảng các SqlParameters.</param>
-        /// <returns>Giá trị Integer được trả về bởi stored procedure (ví dụ: mã lỗi, mã thành công).</returns>
         public static int ExecuteScalarStoredProcedure(string storedProcedureName, SqlParameter[] parameters = null)
         {
             using (SqlConnection conn = new SqlConnection(ConnectionString))
@@ -225,4 +173,3 @@ namespace QuanLyCongViec.DataAccess
         }
     }
 }
-
