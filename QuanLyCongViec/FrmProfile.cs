@@ -110,8 +110,9 @@ namespace QuanLyCongViec
                     _originalFullName = txt_Hoten.Text;
                     _originalEmail = txt_Email.Text;
 
-                    // 🔹 Ban đầu chưa thay đổi → disable nút
+                    // 🔹 Ban đầu chưa thay đổi → disable nút và màu xanh dương
                     btn_capnhat.Enabled = false;
+                    btn_capnhat.BackColor = ColorTranslator.FromHtml("#3498db"); // Xanh dương
                 }
 
             }
@@ -133,6 +134,16 @@ namespace QuanLyCongViec
                 txt_Email.Text.Trim() != _originalEmail;
 
             btn_capnhat.Enabled = daThayDoi; // Enable nút nếu có thay đổi
+            
+            // Đổi màu nút khi có thay đổi
+            if (daThayDoi)
+            {
+                btn_capnhat.BackColor = ColorTranslator.FromHtml("#27ae60"); // Xanh lá
+            }
+            else
+            {
+                btn_capnhat.BackColor = ColorTranslator.FromHtml("#3498db"); // Xanh dương
+            }
         }
 
         #endregion
@@ -149,8 +160,9 @@ namespace QuanLyCongViec
             _originalFullName = txt_Hoten.Text.Trim();
             _originalEmail = txt_Email.Text.Trim();
 
-            // Disable lại nút
+            // Disable lại nút và đổi màu về xanh dương
             btn_capnhat.Enabled = false;
+            btn_capnhat.BackColor = ColorTranslator.FromHtml("#3498db"); // Xanh dương
 
             // Kiểm tra họ tên trống
             if (string.IsNullOrEmpty(hoTen))

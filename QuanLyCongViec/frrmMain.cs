@@ -1,5 +1,6 @@
 ﻿using QuanLyCongViec.DataAccess;
 using QuanLyCongViec.Helpers;
+using QuanLyCongViec.Controls;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -22,6 +23,9 @@ namespace QuanLyCongViec
         private string _username;
         private string _fullName;
         private Timer _timer; // Timer dùng để cập nhật thời gian liên tục
+        private frmThoiKhoaBieu _calendarForm; // Form calendar riêng bên phải
+        private Panel _userMenuPanel; // Panel chứa menu dropdown
+        private bool _isMenuVisible = false; // Trạng thái hiển thị menu
 
         #endregion
 
@@ -40,12 +44,15 @@ namespace QuanLyCongViec
             CapNhatDashboard();      // Load số liệu Dashboard
             KhoiTaoTimer();          // Khởi tạo đồng hồ thời gian
 
-// Thiết lập màu sắc cho các panel
+            // Thiết lập màu sắc cho các panel
             panel_Tong.BackColor = ColorTranslator.FromHtml("#4C84FF");
             panel_Todo.BackColor = ColorTranslator.FromHtml("#6AA9FF");
             panel_Doing.BackColor = ColorTranslator.FromHtml("#FFC94D");
             panel_Done.BackColor = ColorTranslator.FromHtml("#69D16F");
             panel_QuaHan.BackColor = ColorTranslator.FromHtml("#FF6B6B");
+
+            // Khởi tạo menu dropdown
+            KhoiTaoUserMenu();
         }
 
         // Khi đóng form → dừng timer để tránh rò rỉ tài nguyên
@@ -60,11 +67,10 @@ namespace QuanLyCongViec
 
         #region 3. CÁC HÀM XỬ LÝ GIAO DIỆN & THỜI GIAN
 
-        // Hiển thị tên + username
+        // Hiển thị tên
         private void HienThiThongTinUser()
         {
             lbl_Ten.Text = $"Xin chào, {_fullName}";
-            llb_Username.Text = $"Tài khoản: {_username}";
             CapNhatThoiGian();
         }
 
@@ -82,6 +88,132 @@ namespace QuanLyCongViec
             _timer.Interval = 1000; // 1 giây
             _timer.Tick += (s, e) => CapNhatThoiGian();
             _timer.Start();
+        }
+
+        /// <summary>
+        /// Khởi tạo menu dropdown cho user
+        /// </summary>
+        private void KhoiTaoUserMenu()
+        {
+            // Tạo panel menu (chỉ còn 2 items)
+            _userMenuPanel = new Panel
+            {
+                Size = new Size(200, 80),
+                BackColor = Color.White,
+                BorderStyle = BorderStyle.FixedSingle,
+                Visible = false
+            };
+
+            // Tính vị trí menu (bên dưới nút đăng xuất)
+            _userMenuPanel.Location = new Point(
+                btn_DangXuat.Right - _userMenuPanel.Width,
+                btn_DangXuat.Bottom + 5
+            );
+
+            // Menu Item 1: Thông tin tài khoản
+            Button btnProfile = TaoMenuItem("👤 Thông tin tài khoản", 0, () =>
+            {
+                frmProfile profileForm = new frmProfile(_currentUserId, _username, _fullName);
+                profileForm.ShowDialog();
+                if (!string.IsNullOrEmpty(profileForm.NewFullName))
+                {
+                    _fullName = profileForm.NewFullName;
+                    HienThiThongTinUser();
+                }
+                AnMenu();
+            });
+
+            // Menu Item 2: Đăng xuất
+            Button btnLogout = TaoMenuItem("🚪 Đăng xuất", 40, () =>
+            {
+                if (MessageBox.Show("Bạn có chắc muốn đăng xuất?", "Xác nhận",
+                    MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
+                {
+                    _timer?.Stop();
+                    this.Hide();
+                    frmDangNhap loginForm = new frmDangNhap();
+                    loginForm.ShowDialog();
+                    this.Close();
+                }
+                AnMenu();
+            });
+
+            // Thêm các menu items vào panel
+            _userMenuPanel.Controls.Add(btnProfile);
+            _userMenuPanel.Controls.Add(btnLogout);
+
+            // Thêm panel vào form (trên cùng)
+            this.Controls.Add(_userMenuPanel);
+            _userMenuPanel.BringToFront();
+
+            // Gắn sự kiện click vào nút "Tài khoản"
+            btn_DangXuat.Click -= btn_DangXuat_Click; // Xóa event cũ
+            btn_DangXuat.Click += (s, e) => ToggleMenu();
+            // Click ra ngoài để đóng menu
+            this.Click += (s, e) => AnMenu();
+            groupBox1.Click += (s, e) => AnMenu();
+            groupBox3.Click += (s, e) => AnMenu();
+        }
+
+        /// <summary>
+        /// Tạo một menu item button
+        /// </summary>
+        private Button TaoMenuItem(string text, int yPosition, Action clickAction)
+        {
+            Button btn = new Button
+            {
+                Text = text,
+                Location = new Point(0, yPosition),
+                Size = new Size(198, 40),
+                Font = new Font("Segoe UI", 9.5F, FontStyle.Regular),
+                BackColor = Color.White,
+                ForeColor = Color.FromArgb(52, 73, 94),
+                FlatStyle = FlatStyle.Flat,
+                TextAlign = ContentAlignment.MiddleLeft,
+                Padding = new Padding(10, 0, 0, 0),
+                Cursor = Cursors.Hand
+            };
+
+            btn.FlatAppearance.BorderSize = 0;
+            btn.FlatAppearance.MouseOverBackColor = Color.FromArgb(236, 240, 241);
+
+            btn.Click += (s, e) => clickAction();
+
+            return btn;
+        }
+
+        /// <summary>
+        /// Toggle hiển thị/ẩn menu
+        /// </summary>
+        private void ToggleMenu()
+        {
+            if (_isMenuVisible)
+            {
+                AnMenu();
+            }
+            else
+            {
+                HienMenu();
+            }
+        }
+
+        /// <summary>
+        /// Hiển thị menu
+        /// </summary>
+        private void HienMenu()
+        {
+            _userMenuPanel.Visible = true;
+            _userMenuPanel.BringToFront();
+            _isMenuVisible = true;
+        }
+
+        /// <summary>
+        /// Ẩn menu
+        /// </summary>
+        private void AnMenu()
+        {
+            _userMenuPanel.Visible = false;
+            _isMenuVisible = false;
         }
 
         #endregion
@@ -145,6 +277,43 @@ namespace QuanLyCongViec
             frmThemSuaTask taskForm = new frmThemSuaTask(_currentUserId);
             taskForm.ShowDialog();
             CapNhatDashboard(); // Refresh sau khi đóng
+            RefreshCalendarForm(); // Refresh calendar bên phải
+        }
+
+        /// <summary>
+        /// Refresh form calendar nếu đang mở
+        /// </summary>
+        private void RefreshCalendarForm()
+        {
+            if (_calendarForm != null && !_calendarForm.IsDisposed)
+            {
+                // Có thể thêm method RefreshData() trong frmThoiKhoaBieu nếu cần
+            }
+        }
+
+        // Toggle hiển thị form thời khóa biểu (Calendar)
+        private void btn_ThongBao_Click(object sender, EventArgs e)
+        {
+            if (_calendarForm == null || _calendarForm.IsDisposed)
+            {
+                // Nếu form Calendar chưa mở hoặc đã bị đóng → mở lại
+                MoCalendarBenPhai();
+            }
+            else
+            {
+                // Nếu form Calendar đang mở
+                if (_calendarForm.Visible)
+                {
+                    // Nếu đang hiển thị → ẩn đi
+                    _calendarForm.Hide();
+                }
+                else
+                {
+                    // Nếu đang ẩn → hiển thị lại
+                    _calendarForm.Show();
+                    _calendarForm.BringToFront();
+                }
+            }
         }
 
         // Mở form thông báo
@@ -175,21 +344,6 @@ namespace QuanLyCongViec
             }
         }
 
-        // Mở form Profile khi click vào link username
-        private void llb_Username_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
-        {
-            frmProfile profileForm = new frmProfile(_currentUserId, _username, _fullName);
-            profileForm.ShowDialog();
-
-            // Nếu người dùng đổi tên → cập nhật lại trên Main
-            if (!string.IsNullOrEmpty(profileForm.NewFullName))
-            {
-                // Cập nhật lại thông tin người dùng nếu họ đổi tên trong Profile
-                _fullName = profileForm.NewFullName;
-                HienThiThongTinUser();
-            }
-        }
-
         // Sự kiện không có logic nghiệp vụ, có thể bỏ qua hoặc giữ lại
         private void panel2_Paint(object sender, PaintEventArgs e)
         {
@@ -198,12 +352,67 @@ namespace QuanLyCongViec
 
         #endregion
 
-        // Khi form load → khóa resize + tắt nút phóng to
+        // Khi form load → khóa resize + mở form calendar bên phải
         private void frrmMain_Load(object sender, EventArgs e)
         {
             this.MaximizeBox = false;
             this.MinimizeBox = false;
             this.FormBorderStyle = FormBorderStyle.FixedSingle;
+
+            // Mở form Calendar bên phải
+            MoCalendarBenPhai();
+        }
+
+        /// <summary>
+        /// Mở form Calendar bên phải form Main
+        /// </summary>
+        private void MoCalendarBenPhai()
+        {
+            // Truyền UserId của user hiện tại vào Calendar
+            _calendarForm = new frmThoiKhoaBieu(_currentUserId);
+            
+            // Tính toán vị trí bên phải form Main
+            int leftPos = this.Right + 10; // Cách form Main 10px
+            int topPos = this.Top;
+
+            _calendarForm.StartPosition = FormStartPosition.Manual;
+            _calendarForm.Location = new Point(leftPos, topPos);
+            
+            // Hiển thị form không modal (có thể tương tác cả 2 form)
+            _calendarForm.Show();
+            
+            // Event khi đóng form Calendar
+            _calendarForm.FormClosed += (s, e) =>
+            {
+                _calendarForm = null;
+            };
+        }
+
+        /// <summary>
+        /// Khi đóng form Main → đóng form Calendar luôn
+        /// </summary>
+        protected override void OnFormClosed(FormClosedEventArgs e)
+        {
+            if (_calendarForm != null && !_calendarForm.IsDisposed)
+            {
+                _calendarForm.Close();
+            }
+            base.OnFormClosed(e);
+        }
+
+        /// <summary>
+        /// Khi di chuyển form Main → di chuyển Calendar theo
+        /// </summary>
+        protected override void OnLocationChanged(EventArgs e)
+        {
+            base.OnLocationChanged(e);
+            
+            if (_calendarForm != null && !_calendarForm.IsDisposed)
+            {
+                int leftPos = this.Right + 10;
+                int topPos = this.Top;
+                _calendarForm.Location = new Point(leftPos, topPos);
+            }
         }
     }
 }
